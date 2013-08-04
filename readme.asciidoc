@@ -1,0 +1,25 @@
+== MongoDB KPI Storage Engine ==
+
+This project provides a storage engine for timeseries data storage using MongoDB.
+
+=== Build Status: ===
+
+image::https://travis-ci.org/aparnachaudhary/mongodb-kpi-store.png?branch=master["Build Status", link="https://travis-ci.org/aparnachaudhary/mongodb-kpi-store"]
+
+=== Building: ===
+
+.Requirements:
+* Apache Maven version 3
+
+To build, issue this from the command line:
+[source]
+----
+mvn clean install
+----
+
+=== How it works: ===
+TODO
+
+=== Licensing and Copyright: ===
+
+The project is licensed under the http://www.apache.org/licenses/LICENSE-2.0[Apache License, Version 2.0]
