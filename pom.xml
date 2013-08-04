@@ -6,12 +6,12 @@
 	<artifactId>mongodb-kpi-engine</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-
-	<name>kpi-engine</name>
+	<name>mongodb-kpi-engine</name>
+	
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.6.6</slf4j.version>
 		<log4back.version>1.0.6</log4back.version>
+		<mongodb.driver.version>2.11.1</mongodb.driver.version>
 	</properties>
 
 	<developers>
@@ -23,6 +23,26 @@
 	</developers>
 
 	<dependencies>
+		<!-- ==================== -->
+		<!-- MONGODB DEPENDENCIES -->
+		<!-- ==================== -->
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>${mongodb.driver.version}</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
 		<!-- ==================== -->
 		<!-- LOGGING DEPENDENCIES -->
 		<!-- ==================== -->
@@ -37,8 +57,16 @@
 			<version>${log4back.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+		<!-- ==================== -->
+		<!-- UNIT TEST DEPENDENCIES -->
+		<!-- ==================== -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
