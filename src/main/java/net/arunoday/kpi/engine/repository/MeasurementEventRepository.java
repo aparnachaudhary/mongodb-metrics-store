@@ -13,7 +13,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  * @author Aparna
  * 
  */
-public interface MeasurementEventRepository extends
-		PagingAndSortingRepository<MeasurementEventEntity, Long> {
+public interface MeasurementEventRepository extends PagingAndSortingRepository<MeasurementEventEntity, String> {
 
 }

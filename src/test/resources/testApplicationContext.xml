@@ -9,7 +9,7 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-	<context:component-scan base-package="net.arunoday.demo" />
+	<context:component-scan base-package="net.arunoday" />
 
 
 	<!-- =============================================== -->
@@ -19,13 +19,14 @@
 	<!-- MongoDB configuration -->
 	<context:property-placeholder location="classpath:mongo.properties" />
 
-	<mongo:mongo host="localhost" port="27017"/>
+	<mongo:mongo host="localhost" port="27017" />
 
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-		<constructor-arg ref="mongo" />
-		<constructor-arg name="databaseName" value="test" />
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
 	</bean>
-	
+
+	<mongo:db-factory dbname="test" />
+
 	<mongo:repositories base-package="net.arunoday.kpi.engine.repository" />
 
 </beans>

@@ -10,7 +10,7 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-	<context:component-scan base-package="net.arunoday.demo" />
+	<context:component-scan base-package="net.arunoday" />
 
 
 	<!-- =============================================== -->
@@ -30,9 +30,10 @@
 	</mongo:mongo> 
 
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-		<constructor-arg ref="mongo" />
-		<constructor-arg name="databaseName" value="${mongo.database}" />
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
 	</bean>
+
+	<mongo:db-factory dbname="${mongo.database}" />
 
 	<mongo:repositories base-package="net.arunoday.kpi.engine.repository" />
 

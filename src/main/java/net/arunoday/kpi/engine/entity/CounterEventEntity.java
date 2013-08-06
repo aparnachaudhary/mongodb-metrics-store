@@ -9,18 +9,19 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Measurement Event Entity.
+ * Counter event entity.
  * 
  * @author Aparna
  * 
  */
-@Document(collection = "measurement")
-public class MeasurementEventEntity {
+@Document(collection = "counter_events")
+public class CounterEventEntity {
 
 	@Id
 	private String id;
 	private Date occuredOn;
 	private String name;
+	private Long totalCount;
 	private ContextData contextData;
 
 	public String getId() {
@@ -47,6 +48,14 @@ public class MeasurementEventEntity {
 		this.name = name;
 	}
 
+	public Long getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(Long totalCount) {
+		this.totalCount = totalCount;
+	}
+
 	public ContextData getContextData() {
 		return contextData;
 	}
@@ -63,7 +72,7 @@ public class MeasurementEventEntity {
 		if (obj == null || !getClass().equals(obj.getClass())) {
 			return false;
 		}
-		MeasurementEventEntity that = (MeasurementEventEntity) obj;
+		CounterEventEntity that = (CounterEventEntity) obj;
 		return this.getId().equals(that.getId());
 	}
 
@@ -71,12 +80,6 @@ public class MeasurementEventEntity {
 	public int hashCode() {
 
 		return getId().hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return "MeasurementEventEntity [id=" + id + ", occuredOn=" + occuredOn + ", name=" + name + ", contextData="
-				+ contextData + "]";
 	}
 
 }
