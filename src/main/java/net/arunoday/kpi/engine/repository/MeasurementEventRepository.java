@@ -4,8 +4,11 @@
 package net.arunoday.kpi.engine.repository;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import net.arunoday.kpi.engine.entity.MeasurementEventEntity;
+
+import org.springframework.data.mongodb.core.query.Criteria;
 
 /**
  * MongoDB Repository for {@link MeasurementEventEntity}
@@ -14,7 +17,7 @@ import net.arunoday.kpi.engine.entity.MeasurementEventEntity;
  * 
  */
 public interface MeasurementEventRepository<T, ID extends Serializable> {
-	
+
 	static final String EVENT_COLLECTION = "_events";
 
 	/**
@@ -46,14 +49,17 @@ public interface MeasurementEventRepository<T, ID extends Serializable> {
 	T findOne(ID id, String eventType);
 
 	/**
-	 * Returns whether an entity with the given id and event name exists.
+	 * Returns all instances of the {@link MeasurementEventEntity} by event type matching the filter criteria for the
+	 * given time range.
 	 * 
-	 * @param id must not be {@literal null}.
 	 * @param eventType event name
-	 * @return true if an entity with the given id exists, {@literal false} otherwise
-	 * @throws IllegalArgumentException if {@code id} is {@literal null}
+	 * @param criteria for query execution
+	 * @param startTime the start date for events, inclusive
+	 * @param endTime the stop date for events, exclusive
+	 * @param limit the maximum number of events to return; defaults to ten thousand
+	 * @return matching event entities
 	 */
-	boolean exists(ID id, String eventType);
+	Iterable<T> find(String eventType, Criteria criteria, Date startTime, Date endTime, int limit);
 
 	/**
 	 * Returns all instances of the {@link MeasurementEventEntity} by event type.
@@ -62,14 +68,6 @@ public interface MeasurementEventRepository<T, ID extends Serializable> {
 	 * @return all entities
 	 */
 	Iterable<T> findAll(String eventType);
-
-	/**
-	 * Returns all instances of the type with the given IDs.
-	 * 
-	 * @param ids
-	 * @return
-	 */
-	Iterable<T> findAll(Iterable<ID> ids);
 
 	/**
 	 * Returns the number of entities available for the given event name.
@@ -111,5 +109,3 @@ public interface MeasurementEventRepository<T, ID extends Serializable> {
 	 */
 	void deleteAll(String eventType);
 }
-
-

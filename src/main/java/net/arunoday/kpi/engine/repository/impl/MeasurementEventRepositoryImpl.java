@@ -1,10 +1,13 @@
 package net.arunoday.kpi.engine.repository.impl;
 
+import java.util.Date;
+
 import net.arunoday.kpi.engine.entity.MeasurementEventEntity;
 import net.arunoday.kpi.engine.repository.MeasurementEventRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
@@ -39,18 +42,17 @@ public class MeasurementEventRepositoryImpl implements MeasurementEventRepositor
 	}
 
 	@Override
-	public boolean exists(String id, String eventType) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public Iterable<MeasurementEventEntity> findAll(String eventType) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Iterable<MeasurementEventEntity> findAll(Iterable<String> ids) {
-		throw new UnsupportedOperationException();
+	public Iterable<MeasurementEventEntity> find(String eventType, Criteria criteria, Date startTime, Date endTime,
+			int limit) {
+		Query query = new Query(criteria);
+		query.addCriteria(new Criteria("occuredOn").gte(startTime).lt(endTime));
+		query.limit(limit);
+		return mongoTemplate.find(query, MeasurementEventEntity.class, getCollectionName(eventType));
 	}
 
 	@Override
@@ -86,4 +88,5 @@ public class MeasurementEventRepositoryImpl implements MeasurementEventRepositor
 		Assert.notNull(eventName, "eventName must not be null!");
 		return eventName.concat(EVENT_COLLECTION);
 	}
+
 }
