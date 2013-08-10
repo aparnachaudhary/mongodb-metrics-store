@@ -29,6 +29,9 @@ public class CounterEventRepositoryIT extends AbstractRepositoryIT {
 		repository.deleteAll();
 	}
 
+	/**
+	 * Tests the minimum value of count is returned correctly.
+	 */
 	@Test
 	public void testMinRequestCount() {
 		long initialTotal = 10;

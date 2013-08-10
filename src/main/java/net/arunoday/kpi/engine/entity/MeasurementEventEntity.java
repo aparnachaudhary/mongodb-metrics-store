@@ -5,22 +5,18 @@ package net.arunoday.kpi.engine.entity;
 
 import java.util.Date;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 /**
  * Measurement Event Entity.
  * 
  * @author Aparna
  * 
  */
-@Document(collection = "measurement")
 public class MeasurementEventEntity {
 
-	@Id
 	private String id;
 	private Date occuredOn;
-	private String name;
+	/** */
+	private String eventType;
 	private ContextData contextData;
 
 	public String getId() {
@@ -39,12 +35,12 @@ public class MeasurementEventEntity {
 		this.occuredOn = occuredOn;
 	}
 
-	public String getName() {
-		return name;
+	public String getEventType() {
+		return eventType;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setEventType(String eventType) {
+		this.eventType = eventType;
 	}
 
 	public ContextData getContextData() {
@@ -69,14 +65,16 @@ public class MeasurementEventEntity {
 
 	@Override
 	public int hashCode() {
-
 		return getId().hashCode();
 	}
 
 	@Override
 	public String toString() {
-		return "MeasurementEventEntity [id=" + id + ", occuredOn=" + occuredOn + ", name=" + name + ", contextData="
+		return "MeasurementEventEntity [id=" + id + ", occuredOn=" + occuredOn + ", eventType=" + eventType
+				+ ", contextData="
 				+ contextData + "]";
 	}
+
+
 
 }

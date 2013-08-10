@@ -32,21 +32,34 @@ public class CounterEventRepositoryImpl implements CounterEventRepositoryCustom 
 	@Override
 	public Long retrieveMinCount(String eventName) {
 		long lStartTime = System.currentTimeMillis();
+
 		MatchOperation matchOperation = Aggregation.match(Criteria.where("name").is(eventName));
 		GroupOperation groupOperation = Aggregation.group("name").min("totalCount").as("minCount");
 
 		AggregationOperation[] operations = { matchOperation, groupOperation, Aggregation.limit(1) };
-
 		Aggregation aggregation = Aggregation.newAggregation(operations);
-
 		AggregationResults<DBObject> result = mongoTemplate
 				.aggregate(aggregation, CounterEventEntity.class, DBObject.class);
-
 		Long minTotal = (Long) result.getUniqueMappedResult().get("minCount");
 		
 		long lEndTime = System.currentTimeMillis();
 		logger.debug(String.format("Total Time retrieveMinCount(): %s msec ", (lEndTime - lStartTime)));
+
 		return minTotal;
+	}
+
+	@Override
+	public AggregationResults<DBObject> performAggregation(AggregationOperation[] operations) {
+		long lStartTime = System.currentTimeMillis();
+
+		Aggregation aggregation = Aggregation.newAggregation(operations);
+		AggregationResults<DBObject> result = mongoTemplate
+				.aggregate(aggregation, CounterEventEntity.class, DBObject.class);
+
+		long lEndTime = System.currentTimeMillis();
+		logger.debug(String.format("Total Time performAggregation(): %s msec ", (lEndTime - lStartTime)));
+
+		return result;
 	}
 
 }
