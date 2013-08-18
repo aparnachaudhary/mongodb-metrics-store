@@ -19,12 +19,11 @@ import org.springframework.util.Assert;
  * 
  */
 @Repository
-public class GaugeEventRepositoryImpl implements GaugeEventRepository<GaugeEventEntity, String> {
+public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public GaugeEventEntity save(GaugeEventEntity entity) {
 		mongoTemplate.save(entity, getCollectionName(entity.getEventType()));
@@ -32,7 +31,7 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<GaugeEvent
 	}
 
 	@Override
-	public <S extends GaugeEventEntity> Iterable<S> save(Iterable<S> entities) {
+	public Iterable<GaugeEventEntity> save(Iterable<GaugeEventEntity> entities) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -43,7 +42,7 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<GaugeEvent
 
 	@Override
 	public Iterable<GaugeEventEntity> findAll(String eventType) {
-		throw new UnsupportedOperationException();
+		return mongoTemplate.find(new Query(), GaugeEventEntity.class, getCollectionName(eventType));
 	}
 
 	@Override
@@ -71,7 +70,7 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<GaugeEvent
 	}
 
 	@Override
-	public void delete(Iterable<? extends GaugeEventEntity> entities) {
+	public void delete(Iterable<GaugeEventEntity> entities) {
 		Assert.notNull(entities, "The given Iterable of entities can not be null!");
 		for (GaugeEventEntity entity : entities) {
 			delete(entity);

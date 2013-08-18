@@ -24,7 +24,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 /**
  * Tests {@link GaugeEventRepository}
  * 
- * @author Aparna
+ * @author Aparna Chaudhary
  * 
  */
 public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
@@ -32,7 +32,7 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 	private static final String EVENT_TYPE_HOMEREQUEST = "home_response_time";
 
 	@Autowired
-	private GaugeEventRepository<GaugeEventEntity, String> repository;
+	private GaugeEventRepository<String> repository;
 
 	@Before
 	public void before() {
@@ -42,6 +42,7 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 	@Test
 	public void testSave() {
 		GaugeEventEntity event = new GaugeEventEntity(new Date(), EVENT_TYPE_HOMEREQUEST, RandomUtils.nextDouble());
+
 		ContextData data = new ContextData();
 		data.put("request", "localhost");
 		event.setContextData(data);
