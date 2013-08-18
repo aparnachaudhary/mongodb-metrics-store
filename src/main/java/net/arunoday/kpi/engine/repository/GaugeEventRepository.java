@@ -6,17 +6,17 @@ package net.arunoday.kpi.engine.repository;
 import java.io.Serializable;
 import java.util.Date;
 
-import net.arunoday.kpi.engine.entity.MeasurementEventEntity;
+import net.arunoday.kpi.engine.entity.GaugeEventEntity;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 
 /**
- * MongoDB Repository for {@link MeasurementEventEntity}
+ * MongoDB Repository for {@link GaugeEventEntity}
  * 
  * @author Aparna
  * 
  */
-public interface MeasurementEventRepository<T, ID extends Serializable> {
+public interface GaugeEventRepository<T, ID extends Serializable> {
 
 	static final String EVENT_COLLECTION = "_events";
 
@@ -49,7 +49,7 @@ public interface MeasurementEventRepository<T, ID extends Serializable> {
 	T findOne(ID id, String eventType);
 
 	/**
-	 * Returns all instances of the {@link MeasurementEventEntity} by event type matching the filter criteria for the
+	 * Returns all instances of the {@link GaugeEventEntity} by event type matching the filter criteria for the
 	 * given time range.
 	 * 
 	 * @param eventType event name
@@ -62,7 +62,7 @@ public interface MeasurementEventRepository<T, ID extends Serializable> {
 	Iterable<T> find(String eventType, Criteria criteria, Date startTime, Date endTime, int limit);
 
 	/**
-	 * Returns all instances of the {@link MeasurementEventEntity} by event type.
+	 * Returns all instances of the {@link GaugeEventEntity} by event type.
 	 * 
 	 * @param eventType event name
 	 * @return all entities

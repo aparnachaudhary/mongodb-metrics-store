@@ -2,8 +2,8 @@ package net.arunoday.kpi.engine.repository.impl;
 
 import java.util.Date;
 
-import net.arunoday.kpi.engine.entity.MeasurementEventEntity;
-import net.arunoday.kpi.engine.repository.MeasurementEventRepository;
+import net.arunoday.kpi.engine.entity.GaugeEventEntity;
+import net.arunoday.kpi.engine.repository.GaugeEventRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -13,46 +13,46 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 /**
- * Default MongoDB implementation for {@link MeasurementEventRepository}
+ * Default MongoDB implementation for {@link GaugeEventRepository}
  * 
  * @author Aparna
  * 
  */
 @Repository
-public class MeasurementEventRepositoryImpl implements MeasurementEventRepository<MeasurementEventEntity, String> {
+public class GaugeEventRepositoryImpl implements GaugeEventRepository<GaugeEventEntity, String> {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public MeasurementEventEntity save(MeasurementEventEntity entity) {
+	public GaugeEventEntity save(GaugeEventEntity entity) {
 		mongoTemplate.save(entity, getCollectionName(entity.getEventType()));
 		return entity;
 	}
 
 	@Override
-	public <S extends MeasurementEventEntity> Iterable<S> save(Iterable<S> entities) {
+	public <S extends GaugeEventEntity> Iterable<S> save(Iterable<S> entities) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public MeasurementEventEntity findOne(String id, String eventType) {
-		return mongoTemplate.findById(id, MeasurementEventEntity.class, getCollectionName(eventType));
+	public GaugeEventEntity findOne(String id, String eventType) {
+		return mongoTemplate.findById(id, GaugeEventEntity.class, getCollectionName(eventType));
 	}
 
 	@Override
-	public Iterable<MeasurementEventEntity> findAll(String eventType) {
+	public Iterable<GaugeEventEntity> findAll(String eventType) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Iterable<MeasurementEventEntity> find(String eventType, Criteria criteria, Date startTime, Date endTime,
+	public Iterable<GaugeEventEntity> find(String eventType, Criteria criteria, Date startTime, Date endTime,
 			int limit) {
 		Query query = new Query(criteria);
 		query.addCriteria(new Criteria("occuredOn").gte(startTime).lt(endTime));
 		query.limit(limit);
-		return mongoTemplate.find(query, MeasurementEventEntity.class, getCollectionName(eventType));
+		return mongoTemplate.find(query, GaugeEventEntity.class, getCollectionName(eventType));
 	}
 
 	@Override
@@ -66,14 +66,14 @@ public class MeasurementEventRepositoryImpl implements MeasurementEventRepositor
 	}
 
 	@Override
-	public void delete(MeasurementEventEntity entity) {
+	public void delete(GaugeEventEntity entity) {
 		delete(entity.getId(), entity.getEventType());
 	}
 
 	@Override
-	public void delete(Iterable<? extends MeasurementEventEntity> entities) {
-		Assert.notNull(entities, "The given Iterable of entities not be null!");
-		for (MeasurementEventEntity entity : entities) {
+	public void delete(Iterable<? extends GaugeEventEntity> entities) {
+		Assert.notNull(entities, "The given Iterable of entities can not be null!");
+		for (GaugeEventEntity entity : entities) {
 			delete(entity);
 		}
 

@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 /**
  * Counter event entity.
  * 
- * @author Aparna
+ * @author Aparna Chaudhary
  * 
  */
 @Document(collection = "counter_events")

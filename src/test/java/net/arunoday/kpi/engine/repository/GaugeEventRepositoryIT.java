@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.arunoday.kpi.engine.entity.ContextData;
-import net.arunoday.kpi.engine.entity.MeasurementEventEntity;
+import net.arunoday.kpi.engine.entity.GaugeEventEntity;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.joda.time.DateTime;
@@ -22,17 +22,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 /**
- * Tests {@link MeasurementEventRepository}
+ * Tests {@link GaugeEventRepository}
  * 
  * @author Aparna
  * 
  */
-public class MeasurementEventRepositoryIT extends AbstractRepositoryIT {
+public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 
-	private static final String EVENT_TYPE_HOMEREQUEST = "request_home";
+	private static final String EVENT_TYPE_HOMEREQUEST = "home_response_time";
 
 	@Autowired
-	private MeasurementEventRepository<MeasurementEventEntity, String> repository;
+	private GaugeEventRepository<GaugeEventEntity, String> repository;
 
 	@Before
 	public void before() {
@@ -41,12 +41,9 @@ public class MeasurementEventRepositoryIT extends AbstractRepositoryIT {
 
 	@Test
 	public void testSave() {
-		MeasurementEventEntity event = new MeasurementEventEntity();
-		event.setOccuredOn(new Date());
-		event.setEventType(EVENT_TYPE_HOMEREQUEST);
+		GaugeEventEntity event = new GaugeEventEntity(new Date(), EVENT_TYPE_HOMEREQUEST, RandomUtils.nextDouble());
 		ContextData data = new ContextData();
 		data.put("request", "localhost");
-		data.put("memory", RandomUtils.nextInt());
 		event.setContextData(data);
 		repository.save(event);
 
@@ -55,30 +52,28 @@ public class MeasurementEventRepositoryIT extends AbstractRepositoryIT {
 
 	@Test
 	public void testSaveWithNestedContextData() {
-		MeasurementEventEntity event = new MeasurementEventEntity();
-		event.setOccuredOn(new Date());
-		event.setEventType(EVENT_TYPE_HOMEREQUEST);
+		GaugeEventEntity event = new GaugeEventEntity(new Date(), EVENT_TYPE_HOMEREQUEST, RandomUtils.nextDouble());
+
 		ContextData data = new ContextData();
 		data.put("request", "localhost");
-		data.put("memory", RandomUtils.nextInt());
 		Map<String, String> innerData = new HashMap<String, String>();
 		innerData.put("ID1", "VALUE1");
 		innerData.put("ID2", "VALUE2");
 		data.put("data", innerData);
+
 		event.setContextData(data);
 		event = repository.save(event);
 
 		assertEquals("Expected one event to be stored", 1, repository.count(event.getEventType()));
 
-		MeasurementEventEntity retrievedEvent = repository.findOne(event.getId(), event.getEventType());
+		GaugeEventEntity retrievedEvent = repository.findOne(event.getId(), event.getEventType());
 		assertEquals("", retrievedEvent.getContextData(), event.getContextData());
 	}
 
 	@Test
 	public void testFindOne() {
-		MeasurementEventEntity event = new MeasurementEventEntity();
-		event.setOccuredOn(new Date());
-		event.setEventType(EVENT_TYPE_HOMEREQUEST);
+		GaugeEventEntity event = new GaugeEventEntity(new Date(), EVENT_TYPE_HOMEREQUEST, RandomUtils.nextDouble());
+
 		ContextData data = new ContextData();
 		data.put("request", "localhost");
 		data.put("memory", RandomUtils.nextInt());
@@ -96,13 +91,13 @@ public class MeasurementEventRepositoryIT extends AbstractRepositoryIT {
 		storeEvents(25, startDate, "localhost");
 		storeEvents(20, startDate, "someremotemachine");
 
-		List<MeasurementEventEntity> results = (List<MeasurementEventEntity>) repository.find(EVENT_TYPE_HOMEREQUEST,
+		List<GaugeEventEntity> results = (List<GaugeEventEntity>) repository.find(EVENT_TYPE_HOMEREQUEST,
 				Criteria.where("contextData.request").is("localhost"), startDate.toDate(), startDate.plusSeconds(10).toDate(),
 				3);
 		assertEquals(startDate.toDate(), results.get(0).getOccuredOn());
 		assertEquals("", 3, results.size());
 
-		results = (List<MeasurementEventEntity>) repository.find(EVENT_TYPE_HOMEREQUEST, Criteria
+		results = (List<GaugeEventEntity>) repository.find(EVENT_TYPE_HOMEREQUEST, Criteria
 				.where("contextData.index").is(2), startDate.toDate(), startDate.plusSeconds(10).toDate(), 3);
 		assertEquals(startDate.plusSeconds(2).toDate(), results.get(0).getOccuredOn());
 		assertEquals("", 2, results.size());
@@ -111,12 +106,11 @@ public class MeasurementEventRepositoryIT extends AbstractRepositoryIT {
 
 	private void storeEvents(int count, DateTime startDate, String requestType) {
 		for (int i = 0; i < count; i++) {
-			MeasurementEventEntity event = new MeasurementEventEntity();
-			event.setOccuredOn(startDate.plusSeconds(i).toDate());
-			event.setEventType(EVENT_TYPE_HOMEREQUEST);
+			GaugeEventEntity event = new GaugeEventEntity(startDate.plusSeconds(i).toDate(), EVENT_TYPE_HOMEREQUEST,
+					RandomUtils.nextDouble());
+
 			ContextData data = new ContextData();
 			data.put("request", requestType);
-			data.put("memory", RandomUtils.nextInt());
 			data.put("index", i);
 			event.setContextData(data);
 			event = repository.save(event);
