@@ -24,7 +24,7 @@
 	</developers>
 
 	<properties>
-    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.6.6</slf4j.version>
 		<log4back.version>1.0.6</log4back.version>
 		<spring.version>3.2.3.RELEASE</spring.version>
@@ -166,9 +166,34 @@
 							</execution>
 						</executions>
 					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>travis</id>
+			<build>
+				<plugins>
 					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>2.14.1</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>cobertura-maven-plugin</artifactId>
+						<version>2.5.2</version>
+						<configuration>
+							<format>xml</format>
+							<maxmem>256m</maxmem>
+						</configuration>
 					</plugin>
 					<plugin>
 						<groupId>org.eluder.coveralls</groupId>
