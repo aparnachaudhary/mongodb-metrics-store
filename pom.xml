@@ -128,19 +128,6 @@
 		</dependency>
 	</dependencies>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>cobertura-it-maven-plugin-maven2-release</id>
-			<url>http://cobertura-it-maven-plugin.googlecode.com/svn/maven2/releases</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</pluginRepository>
-	</pluginRepositories>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -199,16 +186,19 @@
 					</plugin>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>cobertura-it-maven-plugin</artifactId>
-						<version>2.5</version>
+						<artifactId>cobertura-maven-plugin</artifactId>
 						<configuration>
-							<formats>
-								<format>xml</format>
-							</formats>
-							<check>
-								<haltOnFailure>false</haltOnFailure>
-							</check>
+							<format>xml</format>
 						</configuration>
+						<executions>
+							<execution>
+								<id>cobertura-extra-clean</id>
+								<phase>clean</phase>
+								<goals>
+									<goal>clean</goal>
+								</goals>
+							</execution>
+						</executions>
 					</plugin>
 					<plugin>
 						<groupId>org.eluder.coveralls</groupId>
