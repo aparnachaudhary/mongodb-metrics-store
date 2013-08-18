@@ -24,6 +24,13 @@ public class CounterEventEntity {
 	private Long totalCount;
 	private ContextData contextData;
 
+	/**
+	 * Public Constructor
+	 */
+	public CounterEventEntity() {
+		super();
+	}
+
 	public String getId() {
 		return id;
 	}
