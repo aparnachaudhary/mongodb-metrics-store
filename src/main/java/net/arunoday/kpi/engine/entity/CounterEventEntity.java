@@ -35,10 +35,6 @@ public class CounterEventEntity {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	public Date getOccuredOn() {
 		return occuredOn;
 	}
