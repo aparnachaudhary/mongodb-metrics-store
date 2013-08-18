@@ -9,6 +9,7 @@ This project provides a storage engine for timeseries data storage using MongoDB
 
 === Building: ===
 image::https://travis-ci.org/aparnachaudhary/mongodb-kpi-store.png?branch=master["Build Status", link="https://travis-ci.org/aparnachaudhary/mongodb-kpi-store"]
+image::https://coveralls.io/repos/aparnachaudhary/mongodb-kpi-store/badge.png?branch=master["Build Status", link="https://coveralls.io/r/aparnachaudhary/mongodb-kpi-store?branch=master"]
 
 To build, issue this from the command line:
 [source]
