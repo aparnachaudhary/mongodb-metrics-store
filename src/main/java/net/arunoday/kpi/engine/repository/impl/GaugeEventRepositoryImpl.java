@@ -1,6 +1,10 @@
 package net.arunoday.kpi.engine.repository.impl;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import net.arunoday.kpi.engine.entity.GaugeEventEntity;
 import net.arunoday.kpi.engine.repository.GaugeEventRepository;
@@ -32,7 +36,13 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 
 	@Override
 	public Iterable<GaugeEventEntity> save(Iterable<GaugeEventEntity> entities) {
-		throw new UnsupportedOperationException();
+		Assert.notNull(entities, "The given Iterable of entities can not be null!");
+		List<GaugeEventEntity> result = new ArrayList<GaugeEventEntity>();
+		for (GaugeEventEntity entity : entities) {
+			save(entity);
+			result.add(entity);
+		}
+		return result;
 	}
 
 	@Override
@@ -61,7 +71,7 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 
 	@Override
 	public void delete(String id, String eventName) {
-		throw new UnsupportedOperationException();
+		mongoTemplate.remove(new Query(where("id").is(id)), getCollectionName(eventName));
 	}
 
 	@Override

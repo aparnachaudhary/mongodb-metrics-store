@@ -89,7 +89,7 @@ public interface GaugeEventRepository<ID extends Serializable> {
 	/**
 	 * Deletes a given entity.
 	 * 
-	 * @param entity gauge event
+	 * @param entity gauge event to delete
 	 * @throws IllegalArgumentException in case the given entity is (@literal null}.
 	 */
 	void delete(GaugeEventEntity entity);
@@ -97,7 +97,7 @@ public interface GaugeEventRepository<ID extends Serializable> {
 	/**
 	 * Deletes the given entities.
 	 * 
-	 * @param entities gauge events
+	 * @param entities gauge events to be deleted
 	 * @throws IllegalArgumentException in case the given {@link Iterable} is (@literal null}.
 	 */
 	void delete(Iterable<GaugeEventEntity> entities);
