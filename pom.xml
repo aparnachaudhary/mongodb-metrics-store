@@ -24,6 +24,7 @@
 	</developers>
 
 	<properties>
+    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.6.6</slf4j.version>
 		<log4back.version>1.0.6</log4back.version>
 		<spring.version>3.2.3.RELEASE</spring.version>
