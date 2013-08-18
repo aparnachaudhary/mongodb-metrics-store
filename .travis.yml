@@ -3,6 +3,6 @@ language: java
 script: 'mvn clean install'
 
 after_success:
-  - mvn cobertura:cobertura coveralls:cobertura -Ptravis
+  - mvn install cobertura:cobertura coveralls:cobertura -Ptravis
   
 services: mongodb
