@@ -72,15 +72,6 @@ public class CounterEventRepositoryImpl implements CounterEventRepository<String
 	}
 
 	@Override
-	public void delete(Iterable<CounterEventEntity> entities) {
-		Assert.notNull(entities, "The given Iterable of entities can not be null!");
-		for (CounterEventEntity entity : entities) {
-			delete(entity);
-		}
-
-	}
-
-	@Override
 	public void deleteAll(String eventName) {
 		mongoTemplate.remove(new Query(where("name").is(eventName)), CounterEventEntity.class);
 	}

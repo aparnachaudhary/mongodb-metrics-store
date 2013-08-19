@@ -55,14 +55,6 @@ public interface CounterEventRepository<ID extends Serializable> {
 	void delete(CounterEventEntity entity);
 
 	/**
-	 * Deletes the given entities.
-	 * 
-	 * @param entities gauge events to be deleted
-	 * @throws IllegalArgumentException in case the given {@link Iterable} is (@literal null}.
-	 */
-	void delete(Iterable<CounterEventEntity> entities);
-
-	/**
 	 * Deletes all entities managed by the repository for the given event name.
 	 * 
 	 * @param eventType event name must not be {@literal null}.
