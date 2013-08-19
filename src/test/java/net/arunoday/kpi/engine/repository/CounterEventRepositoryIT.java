@@ -3,6 +3,7 @@
  */
 package net.arunoday.kpi.engine.repository;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import java.util.Date;
@@ -27,6 +28,40 @@ public class CounterEventRepositoryIT extends AbstractRepositoryIT {
 	@Before
 	public void before() {
 		repository.deleteAll();
+	}
+
+	@Test
+	public void testFindById() {
+		CounterEventEntity event1 = new CounterEventEntity();
+		event1.setOccuredOn(new Date());
+		event1.setName("request-home");
+		event1.setTotalCount(2345L);
+		event1 = repository.save(event1, false);
+		
+		CounterEventEntity event2 = new CounterEventEntity();
+		event2.setOccuredOn(new Date());
+		event2.setName("request-home");
+		event2.setTotalCount(1234L);
+		event2 = repository.save(event2, false);
+		
+		CounterEventEntity resultEvent = repository.findOne(event1.getId(), "request-home");
+		assertEquals(event1, resultEvent);
+
+	}
+
+	@Test
+	public void testDelete() {
+		CounterEventEntity event;
+		for (long i = 0; i < 100; i++) {
+			event = new CounterEventEntity();
+			event.setOccuredOn(new Date());
+			event.setName("request-home");
+			event.setTotalCount(i);
+			event = repository.save(event, false);
+		}
+		assertEquals(100, repository.count("request-home"));
+		repository.deleteAll("request-home");
+		assertEquals(0, repository.count("request-home"));
 	}
 
 	/**

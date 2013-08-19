@@ -38,6 +38,23 @@ public interface CounterEventRepository<ID extends Serializable> {
 	CounterEventEntity findOne(ID id, String eventType);
 
 	/**
+	 * Retrieves entities for the event name.
+	 * 
+	 * @param eventType event name must not be {@literal null}.
+	 * @return the entities for the given event name
+	 * @throws IllegalArgumentException if {@code id} is {@literal null}
+	 */
+	Iterable<CounterEventEntity> findAll(String eventType);
+
+	/**
+	 * Returns the number of entities available for the given event name.
+	 * 
+	 * @param eventType event name must not be {@literal null}.
+	 * @return the number of entities
+	 */
+	long count(String eventType);
+
+	/**
 	 * Deletes the entity with the given id and event name
 	 * 
 	 * @param id must not be {@literal null}.

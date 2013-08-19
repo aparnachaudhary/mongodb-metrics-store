@@ -62,8 +62,18 @@ public class CounterEventRepositoryImpl implements CounterEventRepository<String
 	}
 
 	@Override
-	public void delete(String id, String eventName) {
-		mongoTemplate.remove(new Query(where("id").is(id).and("name").is(eventName)));
+	public Iterable<CounterEventEntity> findAll(String eventType) {
+		return mongoTemplate.find(new Query(where("name").is(eventType)), CounterEventEntity.class);
+	}
+
+	@Override
+	public long count(String eventType) {
+		return mongoTemplate.count(new Query(where("name").is(eventType)), CounterEventEntity.class);
+	}
+
+	@Override
+	public void delete(String id, String eventType) {
+		mongoTemplate.remove(new Query(where("id").is(id).and("name").is(eventType)));
 	}
 
 	@Override
@@ -72,8 +82,8 @@ public class CounterEventRepositoryImpl implements CounterEventRepository<String
 	}
 
 	@Override
-	public void deleteAll(String eventName) {
-		mongoTemplate.remove(new Query(where("name").is(eventName)), CounterEventEntity.class);
+	public void deleteAll(String eventType) {
+		mongoTemplate.remove(new Query(where("name").is(eventType)), CounterEventEntity.class);
 	}
 
 	@Override
