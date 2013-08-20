@@ -3,6 +3,7 @@ package net.arunoday.kpi.engine.repository.impl;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * Default MongoDB implementation for {@link GaugeEventRepository}
@@ -64,6 +66,16 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 		return mongoTemplate.find(query, GaugeEventEntity.class, getCollectionName(eventType));
 	}
 
+	public Collection<String> findEventTypes() {
+		List<String> collections = new ArrayList<String>();
+		for (String collectionName : mongoTemplate.getCollectionNames()) {
+			if (StringUtils.endsWithIgnoreCase(collectionName, GaugeEventRepository.EVENT_COLLECTION)) {
+				collections.add(collectionName);
+			}
+		}
+		return collections;
+	}
+
 	@Override
 	public long count(String eventName) {
 		return mongoTemplate.getCollection(getCollectionName(eventName)).count();
@@ -77,15 +89,6 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 	@Override
 	public void delete(GaugeEventEntity entity) {
 		delete(entity.getId(), entity.getEventType());
-	}
-
-	@Override
-	public void delete(Iterable<GaugeEventEntity> entities) {
-		Assert.notNull(entities, "The given Iterable of entities can not be null!");
-		for (GaugeEventEntity entity : entities) {
-			delete(entity);
-		}
-
 	}
 
 	@Override

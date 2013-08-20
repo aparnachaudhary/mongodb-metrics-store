@@ -6,6 +6,7 @@ package net.arunoday.kpi.engine.repository;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,7 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 
 	@Before
 	public void before() {
-		repository.deleteAll(EVENT_TYPE_HOMEREQUEST);
+		cleanUpDB();
 	}
 
 	@Test
@@ -103,6 +104,19 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 		assertEquals(startDate.plusSeconds(2).toDate(), results.get(0).getOccuredOn());
 		assertEquals("", 2, results.size());
 
+	}
+
+	@Test
+	public void testFindEventTypes() {
+
+		GaugeEventEntity event1 = new GaugeEventEntity(new Date(), "request1", RandomUtils.nextDouble());
+		GaugeEventEntity event2 = new GaugeEventEntity(new Date(), "request2", RandomUtils.nextDouble());
+
+		repository.save(event1);
+		repository.save(event2);
+
+		assertEquals("Unexpected event types", Arrays.asList("request1_gauge_events", "request2_gauge_events"),
+				repository.findEventTypes());
 	}
 
 	private void storeEvents(int count, DateTime startDate, String requestType) {

@@ -4,6 +4,7 @@
 package net.arunoday.kpi.engine.repository;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
 import net.arunoday.kpi.engine.entity.GaugeEventEntity;
@@ -18,7 +19,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
  */
 public interface GaugeEventRepository<ID extends Serializable> {
 
-	static final String EVENT_COLLECTION = "_events";
+	static final String EVENT_COLLECTION = "_gauge_events";
 
 	/**
 	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
@@ -70,6 +71,13 @@ public interface GaugeEventRepository<ID extends Serializable> {
 	Iterable<GaugeEventEntity> findAll(String eventType);
 
 	/**
+	 * Returns stored event types
+	 * 
+	 * @return collection of stored event types
+	 */
+	Collection<String> findEventTypes();
+
+	/**
 	 * Returns the number of entities available for the given event name.
 	 * 
 	 * @param eventType event name must not be {@literal null}.
@@ -93,14 +101,6 @@ public interface GaugeEventRepository<ID extends Serializable> {
 	 * @throws IllegalArgumentException in case the given entity is (@literal null}.
 	 */
 	void delete(GaugeEventEntity entity);
-
-	/**
-	 * Deletes the given entities.
-	 * 
-	 * @param entities gauge events to be deleted
-	 * @throws IllegalArgumentException in case the given {@link Iterable} is (@literal null}.
-	 */
-	void delete(Iterable<GaugeEventEntity> entities);
 
 	/**
 	 * Deletes all entities managed by the repository for the given event name.
