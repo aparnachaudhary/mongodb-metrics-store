@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import net.arunoday.kpi.engine.entity.GaugeEventEntity;
+import net.arunoday.kpi.engine.entity.MetricOperation;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 
@@ -108,4 +109,15 @@ public interface GaugeEventRepository<ID extends Serializable> {
 	 * @param eventType event name must not be {@literal null}.
 	 */
 	void deleteAll(String eventType);
+
+	/**
+	 * Performs aggregation based on the input aggregation operations.
+	 * 
+	 * @param eventName name of the event for which aggregation is required
+	 * @param metricOperation metric group operation
+	 * @param startDate inclusive
+	 * @param endDate exclusive
+	 * @return result of aggregation
+	 */
+	Double performAggregation(String eventName, MetricOperation metricOperation, Date startDate, Date endDate);
 }

@@ -23,9 +23,9 @@ public abstract class AbstractRepositoryIT {
 	/**
 	 * Cleans up database
 	 */
-	protected void cleanUpDB() {
+	protected void cleanUpDB(String collectionFormat) {
 		for (String collection : mongoOperations.getCollectionNames()) {
-			if (StringUtils.endsWithIgnoreCase(collection, GaugeEventRepository.EVENT_COLLECTION)) {
+			if (StringUtils.endsWithIgnoreCase(collection, collectionFormat)) {
 				mongoOperations.dropCollection(collection);
 			}
 		}

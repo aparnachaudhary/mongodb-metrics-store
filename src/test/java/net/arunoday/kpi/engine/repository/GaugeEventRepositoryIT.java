@@ -14,6 +14,7 @@ import java.util.Map;
 
 import net.arunoday.kpi.engine.entity.ContextData;
 import net.arunoday.kpi.engine.entity.GaugeEventEntity;
+import net.arunoday.kpi.engine.entity.MetricOperation;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.joda.time.DateTime;
@@ -37,7 +38,7 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 
 	@Before
 	public void before() {
-		cleanUpDB();
+		cleanUpDB(GaugeEventRepository.EVENT_COLLECTION);
 	}
 
 	@Test
@@ -117,6 +118,37 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 
 		assertEquals("Unexpected event types", Arrays.asList("request1_gauge_events", "request2_gauge_events"),
 				repository.findEventTypes());
+	}
+
+	@Test
+	public void testMinValue() {
+		DateTime startDate = new DateTime("2013-08-10T16:00:00.389Z");
+		for (int i = 1; i < 25; i++) {
+			GaugeEventEntity event = new GaugeEventEntity(startDate.plusSeconds(i).toDate(), EVENT_TYPE_HOMEREQUEST,
+					i);
+			ContextData data = new ContextData();
+			data.put("request", "somerequest");
+			data.put("index", i);
+			event.setContextData(data);
+			event = repository.save(event);
+		}
+
+		double minValue = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, MetricOperation.MIN, startDate.toDate(),
+				startDate
+				.plusSeconds(25).toDate());
+		assertEquals("Unexpected Min value", 1, minValue, 0.00);
+
+		double maxValue = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, MetricOperation.MAX, startDate.toDate(),
+				startDate.plusSeconds(25).toDate());
+		assertEquals("Unexpected Max value", 24, maxValue, 0.00);
+
+		double avgValue = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, MetricOperation.AVG, startDate.toDate(),
+				startDate.plusSeconds(25).toDate());
+		assertEquals("Unexpected Max value", 12.5, avgValue, 0.00);
+
+		double sum = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, MetricOperation.SUM, startDate.toDate(),
+				startDate.plusSeconds(25).toDate());
+		assertEquals("Unexpected Max value", 300, sum, 0.00);
 	}
 
 	private void storeEvents(int count, DateTime startDate, String requestType) {

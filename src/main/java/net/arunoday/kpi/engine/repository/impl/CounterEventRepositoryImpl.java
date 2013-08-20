@@ -35,6 +35,7 @@ public class CounterEventRepositoryImpl implements CounterEventRepository<String
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
+	@Override
 	public CounterEventEntity save(CounterEventEntity entity, boolean isDecrement) {
 		Assert.notNull(entity, "The given entity can not be null!");
 
