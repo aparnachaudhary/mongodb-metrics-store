@@ -8,7 +8,11 @@ package net.arunoday.kpi.engine.entity;
  */
 public enum MetricResolution {
 
-	YEAR("y"), MONTH("m"), DAY("d"), HOUR("h"), MINUTE("m");
+	YEAR("y"),
+	/** Monthly aggregate */
+	MONTH("m"), WEEK("w"),
+	/** Daily Aggregate */
+	DAY("d"), HOUR("h"), MINUTE("m");
 
 	private String code;
 
