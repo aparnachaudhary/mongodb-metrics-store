@@ -1,6 +1,6 @@
-== MongoDB KPI Storage Engine ==
+== MongoDB Metrics Storage Engine ==
 
-This project provides a storage engine for timeseries data storage using MongoDB.
+This project provides a storage engine based on MongoDB for timeseries event data stream. Metrics (min, max, avg, sum) are calculated periodically and stored separately from the event data stream.
 
 === Requirements: ===
 * Apache Maven version 3
@@ -8,8 +8,8 @@ This project provides a storage engine for timeseries data storage using MongoDB
 * MongoDB 2.0.7 or later
 
 === Building: ===
-image::https://travis-ci.org/aparnachaudhary/mongodb-kpi-store.png?branch=master["Build Status", link="https://travis-ci.org/aparnachaudhary/mongodb-kpi-store"]
-image::https://coveralls.io/repos/aparnachaudhary/mongodb-kpi-store/badge.png?branch=master["Build Status", link="https://coveralls.io/r/aparnachaudhary/mongodb-kpi-store?branch=master"]
+image::https://travis-ci.org/aparnachaudhary/mongodb-metrics-store.png?branch=master["Build Status", link="https://travis-ci.org/aparnachaudhary/mongodb-metrics-store"]
+image::https://coveralls.io/repos/aparnachaudhary/mongodb-metrics-store/badge.png?branch=master["Build Status", link="https://coveralls.io/r/aparnachaudhary/mongodb-metrics-store?branch=master"]
 
 To build, issue this from the command line:
 [source]
