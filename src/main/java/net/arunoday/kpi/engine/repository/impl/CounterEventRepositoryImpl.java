@@ -1,7 +1,14 @@
 package net.arunoday.kpi.engine.repository.impl;
 
+import static net.arunoday.kpi.engine.entity.CounterEventEntity.EVENT_TYPE_FIELD;
+import static net.arunoday.kpi.engine.entity.CounterEventEntity.OCCURED_ON_FIELD;
+import static net.arunoday.kpi.engine.entity.CounterEventEntity.TOTAL_COUNT_FIELD;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+
+import java.util.Date;
+
 import net.arunoday.kpi.engine.entity.CounterEventEntity;
+import net.arunoday.kpi.engine.entity.MetricOperation;
 import net.arunoday.kpi.engine.repository.CounterEventRepository;
 
 import org.slf4j.Logger;
@@ -39,13 +46,13 @@ public class CounterEventRepositoryImpl implements CounterEventRepository<String
 	public CounterEventEntity save(CounterEventEntity entity, boolean isDecrement) {
 		Assert.notNull(entity, "The given entity can not be null!");
 
-		Query query = new Query(where("name").is(entity.getName()));
-		query = query.with(new Sort(Sort.Direction.DESC, "occuredOn"));
+		Query query = new Query(where(EVENT_TYPE_FIELD).is(entity.getEventType()));
+		query = query.with(new Sort(Sort.Direction.DESC, OCCURED_ON_FIELD));
 		query.limit(1);
 
 		CounterEventEntity existingEntity = mongoTemplate.findOne(query, CounterEventEntity.class);
-		Long existingCount = 0L;
-		if(existingEntity != null){
+		double existingCount = 0;
+		if (existingEntity != null) {
 			existingCount = existingEntity.getTotalCount();
 		}
 		if (isDecrement) {
@@ -64,70 +71,32 @@ public class CounterEventRepositoryImpl implements CounterEventRepository<String
 
 	@Override
 	public Iterable<CounterEventEntity> findAll(String eventType) {
-		return mongoTemplate.find(new Query(where("name").is(eventType)), CounterEventEntity.class);
+		return mongoTemplate.find(new Query(where(EVENT_TYPE_FIELD).is(eventType)), CounterEventEntity.class);
 	}
 
 	@Override
 	public long count(String eventType) {
-		return mongoTemplate.count(new Query(where("name").is(eventType)), CounterEventEntity.class);
+		return mongoTemplate.count(new Query(where(EVENT_TYPE_FIELD).is(eventType)), CounterEventEntity.class);
 	}
 
 	@Override
 	public void delete(String id, String eventType) {
-		mongoTemplate.remove(new Query(where("id").is(id).and("name").is(eventType)));
+		mongoTemplate.remove(new Query(where("id").is(id).and(EVENT_TYPE_FIELD).is(eventType)));
 	}
 
 	@Override
 	public void delete(CounterEventEntity entity) {
-		delete(entity.getId(), entity.getName());
+		delete(entity.getId(), entity.getEventType());
 	}
 
 	@Override
 	public void deleteAll(String eventType) {
-		mongoTemplate.remove(new Query(where("name").is(eventType)), CounterEventEntity.class);
+		mongoTemplate.remove(new Query(where(EVENT_TYPE_FIELD).is(eventType)), CounterEventEntity.class);
 	}
 
 	@Override
 	public void deleteAll() {
 		mongoTemplate.remove(new Query(), CounterEventEntity.class);
-	}
-
-	@Override
-	public Long retrieveMinCount(String eventName) {
-		long lStartTime = System.currentTimeMillis();
-
-		MatchOperation matchOperation = Aggregation.match(Criteria.where("name").is(eventName));
-		GroupOperation groupOperation = Aggregation.group("name").min("totalCount").as("minCount");
-
-		AggregationOperation[] operations = { matchOperation, groupOperation, Aggregation.limit(1) };
-		Aggregation aggregation = Aggregation.newAggregation(operations);
-		AggregationResults<DBObject> result = mongoTemplate
-				.aggregate(aggregation, CounterEventEntity.class, DBObject.class);
-		Long minTotal = (Long) result.getUniqueMappedResult().get("minCount");
-		
-		long lEndTime = System.currentTimeMillis();
-		logger.debug(String.format("Total Time retrieveMinCount(): %s msec ", (lEndTime - lStartTime)));
-
-		return minTotal;
-	}
-
-	@Override
-	public Long retrieveMaxCount(String eventName) {
-		long lStartTime = System.currentTimeMillis();
-
-		MatchOperation matchOperation = Aggregation.match(Criteria.where("name").is(eventName));
-		GroupOperation groupOperation = Aggregation.group("name").max("totalCount").as("maxCount");
-
-		AggregationOperation[] operations = { matchOperation, groupOperation, Aggregation.limit(1) };
-		Aggregation aggregation = Aggregation.newAggregation(operations);
-		AggregationResults<DBObject> result = mongoTemplate
-				.aggregate(aggregation, CounterEventEntity.class, DBObject.class);
-		Long maxTotal = (Long) result.getUniqueMappedResult().get("maxCount");
-
-		long lEndTime = System.currentTimeMillis();
-		logger.debug(String.format("Total Time retrieveMaxCount(): %s msec ", (lEndTime - lStartTime)));
-
-		return maxTotal;
 	}
 
 	@Override
@@ -142,6 +111,39 @@ public class CounterEventRepositoryImpl implements CounterEventRepository<String
 		logger.debug(String.format("Total Time performAggregation(): %s msec ", (lEndTime - lStartTime)));
 
 		return result;
+	}
+
+	@Override
+	public Double performAggregation(String eventName, MetricOperation metricOperation, Date startDate, Date endDate) {
+		long lStartTime = System.currentTimeMillis();
+
+		Criteria criteria = Criteria.where(EVENT_TYPE_FIELD).is(eventName);
+		if (startDate != null && endDate != null) {
+			criteria.andOperator(Criteria.where(OCCURED_ON_FIELD).gte(startDate), Criteria.where(OCCURED_ON_FIELD)
+					.lt(endDate));
+		} else if (startDate != null) {
+			criteria.andOperator(Criteria.where(OCCURED_ON_FIELD).gte(startDate));
+		} else if (endDate != null) {
+			criteria.andOperator(Criteria.where(OCCURED_ON_FIELD).lt(endDate));
+		}
+		MatchOperation matchOperation = Aggregation.match(criteria);
+
+		GroupOperation groupOperation = Aggregation.group(EVENT_TYPE_FIELD).min(TOTAL_COUNT_FIELD)
+				.as(MetricOperation.MIN.getOperation()).max(TOTAL_COUNT_FIELD).as(MetricOperation.MAX.getOperation())
+				.avg(TOTAL_COUNT_FIELD).as(MetricOperation.AVG.getOperation()).sum(TOTAL_COUNT_FIELD)
+				.as(MetricOperation.SUM.getOperation());
+
+		AggregationOperation[] operations = { matchOperation, groupOperation, Aggregation.limit(1) };
+		Aggregation aggregation = Aggregation.newAggregation(operations);
+		AggregationResults<DBObject> result = mongoTemplate
+				.aggregate(aggregation, CounterEventEntity.class, DBObject.class);
+
+		Double resultValue = (Double) result.getUniqueMappedResult().get(metricOperation.getOperation());
+
+		long lEndTime = System.currentTimeMillis();
+		logger.debug(String.format("Total Time performAggregation(): %s msec ", (lEndTime - lStartTime)));
+
+		return resultValue;
 	}
 
 }

@@ -3,13 +3,15 @@
  */
 package net.arunoday.kpi.engine.repository;
 
+import static net.arunoday.kpi.engine.entity.MetricOperation.MAX;
+import static net.arunoday.kpi.engine.entity.MetricOperation.MIN;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 import java.util.Date;
 
 import net.arunoday.kpi.engine.entity.CounterEventEntity;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,16 +36,16 @@ public class CounterEventRepositoryIT extends AbstractRepositoryIT {
 	public void testFindById() {
 		CounterEventEntity event1 = new CounterEventEntity();
 		event1.setOccuredOn(new Date());
-		event1.setName("request-home");
+		event1.setEventType("request-home");
 		event1.setTotalCount(2345L);
 		event1 = repository.save(event1, false);
-		
+
 		CounterEventEntity event2 = new CounterEventEntity();
 		event2.setOccuredOn(new Date());
-		event2.setName("request-home");
+		event2.setEventType("request-home");
 		event2.setTotalCount(1234L);
 		event2 = repository.save(event2, false);
-		
+
 		CounterEventEntity resultEvent = repository.findOne(event1.getId(), "request-home");
 		assertEquals(event1, resultEvent);
 
@@ -55,7 +57,7 @@ public class CounterEventRepositoryIT extends AbstractRepositoryIT {
 		for (long i = 0; i < 100; i++) {
 			event = new CounterEventEntity();
 			event.setOccuredOn(new Date());
-			event.setName("request-home");
+			event.setEventType("request-home");
 			event.setTotalCount(i);
 			event = repository.save(event, false);
 		}
@@ -69,24 +71,30 @@ public class CounterEventRepositoryIT extends AbstractRepositoryIT {
 	 */
 	@Test
 	public void testMinRequestCount() {
+		DateTime startDate = new DateTime("2013-08-10T16:00:00.389Z");
 		long initialTotal = 10;
 		CounterEventEntity event;
 		for (int i = 0; i < 100; i++) {
 			event = new CounterEventEntity();
-			event.setOccuredOn(new Date());
-			event.setName("request-home");
+			event.setOccuredOn(startDate.plusSeconds(i).toDate());
+			event.setEventType("request-home");
 			event.setTotalCount(initialTotal + i);
 			event = repository.save(event, false);
 		}
 		for (long i = 0; i < 10; i++) {
 			event = new CounterEventEntity();
 			event.setOccuredOn(new Date());
-			event.setName("request2-home");
+			event.setEventType("request2-home");
 			event.setTotalCount(i);
 			event = repository.save(event, false);
 		}
-		assertSame(10L, repository.retrieveMinCount("request-home"));
-		assertSame(0L, repository.retrieveMinCount("request2-home"));
+		assertEquals(10, repository.performAggregation("request-home", MIN, null, null), 0.00);
+		assertEquals(10, repository.performAggregation("request-home", MIN, startDate.toDate(), null), 0.00);
+		assertEquals(10, repository.performAggregation("request-home", MIN, null, startDate.plusSeconds(15).toDate()), 0.00);
+		assertEquals(10,
+				repository.performAggregation("request-home", MIN, startDate.toDate(), startDate.plusSeconds(15).toDate()),
+				0.00);
+		assertEquals(0, repository.performAggregation("request2-home", MIN, null, null), 0.00);
 	}
 
 	/**
@@ -95,30 +103,31 @@ public class CounterEventRepositoryIT extends AbstractRepositoryIT {
 	@Test
 	public void testIncrementAndDecrement() {
 		CounterEventEntity event = new CounterEventEntity();
-		event.setOccuredOn(new Date());
-		event.setName("request-home");
+		DateTime startDate = new DateTime("2013-08-10T16:00:00.389Z");
+		event.setOccuredOn(startDate.toDate());
+		event.setEventType("request-home");
 		event.setTotalCount(10L);
 		event = repository.save(event, false);
-		assertSame(10L, repository.retrieveMinCount("request-home"));
+		assertEquals(10, repository.performAggregation("request-home", MIN, null, null), 0.00);
 
 		// increment counter
 		CounterEventEntity incrementCounter = new CounterEventEntity();
 		incrementCounter.setOccuredOn(new Date());
-		incrementCounter.setName("request-home");
+		incrementCounter.setEventType("request-home");
 		incrementCounter.setTotalCount(10L);
 		incrementCounter = repository.save(incrementCounter, false);
-		assertSame(10L, repository.retrieveMinCount("request-home"));
-		assertSame(20L, repository.retrieveMaxCount("request-home"));
+		assertEquals(10, repository.performAggregation("request-home", MIN, null, null), 0.00);
+		assertEquals(20, repository.performAggregation("request-home", MAX, null, null), 0.00);
 
 		// decrement counter
 		CounterEventEntity decrementCounter = new CounterEventEntity();
 		decrementCounter.setOccuredOn(new Date());
-		decrementCounter.setName("request-home");
+		decrementCounter.setEventType("request-home");
 		decrementCounter.setTotalCount(5L);
 		decrementCounter = repository.save(decrementCounter, true);
-		assertSame(15L, decrementCounter.getTotalCount());
-		assertSame(10L, repository.retrieveMinCount("request-home"));
-		assertSame(20L, repository.retrieveMaxCount("request-home"));
+		assertEquals(15, decrementCounter.getTotalCount(), 0.00);
+		assertEquals(10, repository.performAggregation("request-home", MIN, null, null), 0.00);
+		assertEquals(20, repository.performAggregation("request-home", MAX, null, null), 0.00);
 	}
 
 }

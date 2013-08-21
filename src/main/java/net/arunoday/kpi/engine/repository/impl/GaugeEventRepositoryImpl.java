@@ -1,5 +1,8 @@
 package net.arunoday.kpi.engine.repository.impl;
 
+import static net.arunoday.kpi.engine.entity.GaugeEventEntity.EVENT_TYPE_FIELD;
+import static net.arunoday.kpi.engine.entity.GaugeEventEntity.OCCURED_ON_FIELD;
+import static net.arunoday.kpi.engine.entity.GaugeEventEntity.VALUE_FIELD;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.util.ArrayList;
@@ -72,7 +75,7 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 	@Override
 	public Iterable<GaugeEventEntity> find(String eventType, Criteria criteria, Date startTime, Date endTime, int limit) {
 		Query query = new Query(criteria);
-		query.addCriteria(new Criteria("occuredOn").gte(startTime).lt(endTime));
+		query.addCriteria(new Criteria(OCCURED_ON_FIELD).gte(startTime).lt(endTime));
 		query.limit(limit);
 		return mongoTemplate.find(query, GaugeEventEntity.class, getCollectionName(eventType));
 	}
@@ -112,15 +115,20 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 	public Double performAggregation(String eventName, MetricOperation metricOperation, Date startDate, Date endDate) {
 		long lStartTime = System.currentTimeMillis();
 
-		String valueField = "value";
-		String eventType = "eventType";
+		Criteria criteria = Criteria.where(EVENT_TYPE_FIELD).is(eventName);
+		if (startDate != null && endDate != null) {
+			criteria.andOperator(Criteria.where(OCCURED_ON_FIELD).gte(startDate), Criteria.where(OCCURED_ON_FIELD)
+					.lt(endDate));
+		} else if (startDate != null) {
+			criteria.andOperator(Criteria.where(OCCURED_ON_FIELD).gte(startDate));
+		} else if (endDate != null) {
+			criteria.andOperator(Criteria.where(OCCURED_ON_FIELD).lt(endDate));
+		}
+		MatchOperation matchOperation = Aggregation.match(criteria);
 
-		MatchOperation matchOperation = Aggregation.match(Criteria.where(eventType).is(eventName).and("occuredOn")
-				.gte(startDate).lt(endDate));
-
-		GroupOperation groupOperation = Aggregation.group(eventType).min(valueField)
-				.as(MetricOperation.MIN.getOperation()).max(valueField).as(MetricOperation.MAX.getOperation())
-				.avg(valueField).as(MetricOperation.AVG.getOperation()).sum(valueField)
+		GroupOperation groupOperation = Aggregation.group(EVENT_TYPE_FIELD).min(VALUE_FIELD)
+				.as(MetricOperation.MIN.getOperation()).max(VALUE_FIELD).as(MetricOperation.MAX.getOperation())
+				.avg(VALUE_FIELD).as(MetricOperation.AVG.getOperation()).sum(VALUE_FIELD)
 				.as(MetricOperation.SUM.getOperation());
 
 		AggregationOperation[] operations = { matchOperation, groupOperation, Aggregation.limit(1) };

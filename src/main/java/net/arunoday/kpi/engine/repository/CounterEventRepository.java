@@ -1,8 +1,10 @@
 package net.arunoday.kpi.engine.repository;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import net.arunoday.kpi.engine.entity.CounterEventEntity;
+import net.arunoday.kpi.engine.entity.MetricOperation;
 
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -85,27 +87,22 @@ public interface CounterEventRepository<ID extends Serializable> {
 	void deleteAll();
 
 	/**
-	 * Returns minimum value for count for given event name.
-	 * 
-	 * @param eventName name of the event for which min count is required
-	 * @return min count for the given event
-	 */
-	Long retrieveMinCount(String eventName);
-
-	/**
-	 * Returns maximum value for count for given event name.
-	 * 
-	 * @param eventName name of the event for which max count is required
-	 * @return max count for the given event
-	 */
-	Long retrieveMaxCount(String eventName);
-
-	/**
 	 * Performs aggregation based on the input aggregation operations.
 	 * 
 	 * @param operations aggregation operations like match, group, limit, sort
 	 * @return result of aggregation
 	 */
 	AggregationResults<DBObject> performAggregation(AggregationOperation[] operations);
+
+	/**
+	 * Performs aggregation based on the input metric operation.
+	 * 
+	 * @param eventName name of the event for which aggregation is required
+	 * @param metricOperation metric group operation
+	 * @param startDate start date for event filtering; date is inclusive; ignored if null.
+	 * @param endDate end date for event filtering; date is exclusive; ignored if null.
+	 * @return result of aggregation
+	 */
+	Double performAggregation(String eventName, MetricOperation metricOperation, Date startDate, Date endDate);
 
 }

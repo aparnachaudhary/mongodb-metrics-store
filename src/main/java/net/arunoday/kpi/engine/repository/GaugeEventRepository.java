@@ -111,12 +111,12 @@ public interface GaugeEventRepository<ID extends Serializable> {
 	void deleteAll(String eventType);
 
 	/**
-	 * Performs aggregation based on the input aggregation operations.
+	 * Performs aggregation based on the input metric operation.
 	 * 
 	 * @param eventName name of the event for which aggregation is required
 	 * @param metricOperation metric group operation
-	 * @param startDate inclusive
-	 * @param endDate exclusive
+	 * @param startDate start date for event filtering; date is inclusive; ignored if null.
+	 * @param endDate end date for event filtering; date is exclusive; ignored if null.
 	 * @return result of aggregation
 	 */
 	Double performAggregation(String eventName, MetricOperation metricOperation, Date startDate, Date endDate);

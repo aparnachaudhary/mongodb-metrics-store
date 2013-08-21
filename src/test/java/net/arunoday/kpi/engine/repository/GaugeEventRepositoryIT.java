@@ -3,6 +3,10 @@
  */
 package net.arunoday.kpi.engine.repository;
 
+import static net.arunoday.kpi.engine.entity.MetricOperation.AVG;
+import static net.arunoday.kpi.engine.entity.MetricOperation.MAX;
+import static net.arunoday.kpi.engine.entity.MetricOperation.MIN;
+import static net.arunoday.kpi.engine.entity.MetricOperation.SUM;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -14,7 +18,6 @@ import java.util.Map;
 
 import net.arunoday.kpi.engine.entity.ContextData;
 import net.arunoday.kpi.engine.entity.GaugeEventEntity;
-import net.arunoday.kpi.engine.entity.MetricOperation;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.joda.time.DateTime;
@@ -100,8 +103,8 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 		assertEquals(startDate.toDate(), results.get(0).getOccuredOn());
 		assertEquals("", 3, results.size());
 
-		results = (List<GaugeEventEntity>) repository.find(EVENT_TYPE_HOMEREQUEST, Criteria
-				.where("contextData.index").is(2), startDate.toDate(), startDate.plusSeconds(10).toDate(), 3);
+		results = (List<GaugeEventEntity>) repository.find(EVENT_TYPE_HOMEREQUEST, Criteria.where("contextData.index")
+				.is(2), startDate.toDate(), startDate.plusSeconds(10).toDate(), 3);
 		assertEquals(startDate.plusSeconds(2).toDate(), results.get(0).getOccuredOn());
 		assertEquals("", 2, results.size());
 
@@ -121,11 +124,10 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 	}
 
 	@Test
-	public void testMinValue() {
+	public void testAggregateOperations() {
 		DateTime startDate = new DateTime("2013-08-10T16:00:00.389Z");
 		for (int i = 1; i < 25; i++) {
-			GaugeEventEntity event = new GaugeEventEntity(startDate.plusSeconds(i).toDate(), EVENT_TYPE_HOMEREQUEST,
-					i);
+			GaugeEventEntity event = new GaugeEventEntity(startDate.plusSeconds(i).toDate(), EVENT_TYPE_HOMEREQUEST, i);
 			ContextData data = new ContextData();
 			data.put("request", "somerequest");
 			data.put("index", i);
@@ -133,22 +135,30 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 			event = repository.save(event);
 		}
 
-		double minValue = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, MetricOperation.MIN, startDate.toDate(),
-				startDate
+		double minValue = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, MIN, startDate.toDate(), startDate
 				.plusSeconds(25).toDate());
 		assertEquals("Unexpected Min value", 1, minValue, 0.00);
 
-		double maxValue = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, MetricOperation.MAX, startDate.toDate(),
-				startDate.plusSeconds(25).toDate());
+		double maxValue = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, MAX, startDate.toDate(), startDate
+				.plusSeconds(25).toDate());
 		assertEquals("Unexpected Max value", 24, maxValue, 0.00);
 
-		double avgValue = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, MetricOperation.AVG, startDate.toDate(),
-				startDate.plusSeconds(25).toDate());
+		double avgValue = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, AVG, startDate.toDate(), startDate
+				.plusSeconds(25).toDate());
 		assertEquals("Unexpected Max value", 12.5, avgValue, 0.00);
 
-		double sum = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, MetricOperation.SUM, startDate.toDate(),
+		double sum = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, SUM, startDate.toDate(),
 				startDate.plusSeconds(25).toDate());
 		assertEquals("Unexpected Max value", 300, sum, 0.00);
+
+		assertEquals("Unexpected Max value", 300,
+				repository.performAggregation(EVENT_TYPE_HOMEREQUEST, SUM, startDate.toDate(), null), 0.00);
+
+		assertEquals("Unexpected Max value", 300,
+				repository.performAggregation(EVENT_TYPE_HOMEREQUEST, SUM, null, startDate.plusSeconds(25).toDate()), 0.00);
+
+		assertEquals("Unexpected Max value", 300, repository.performAggregation(EVENT_TYPE_HOMEREQUEST, SUM, null, null),
+				0.00);
 	}
 
 	private void storeEvents(int count, DateTime startDate, String requestType) {

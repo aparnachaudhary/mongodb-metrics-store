@@ -17,11 +17,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "counter_events")
 public class CounterEventEntity {
 
+	public static final String EVENT_TYPE_FIELD = "eventType";
+	public static final String OCCURED_ON_FIELD = "occuredOn";
+	public static final String TOTAL_COUNT_FIELD = "totalCount";
+
 	@Id
 	private String id;
 	private Date occuredOn;
-	private String name;
-	private Long totalCount;
+	/** Type of event. */
+	private String eventType;
+	private double totalCount;
 	private ContextData contextData;
 
 	/**
@@ -43,19 +48,19 @@ public class CounterEventEntity {
 		this.occuredOn = occuredOn;
 	}
 
-	public String getName() {
-		return name;
+	public String getEventType() {
+		return eventType;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setEventType(String eventType) {
+		this.eventType = eventType;
 	}
 
-	public Long getTotalCount() {
+	public double getTotalCount() {
 		return totalCount;
 	}
 
-	public void setTotalCount(Long totalCount) {
+	public void setTotalCount(double totalCount) {
 		this.totalCount = totalCount;
 	}
 
@@ -81,7 +86,6 @@ public class CounterEventEntity {
 
 	@Override
 	public int hashCode() {
-
 		return getId().hashCode();
 	}
 

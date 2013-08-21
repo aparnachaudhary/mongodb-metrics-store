@@ -14,6 +14,10 @@ import java.util.Date;
  */
 public class GaugeEventEntity {
 
+	public static final String EVENT_TYPE_FIELD = "eventType";
+	public static final String OCCURED_ON_FIELD = "occuredOn";
+	public static final String VALUE_FIELD = "value";
+
 	/** unique identifier for this event */
 	private String id;
 	/** Time of occurrence of event */

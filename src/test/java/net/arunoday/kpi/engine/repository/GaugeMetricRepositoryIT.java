@@ -1,8 +1,8 @@
 package net.arunoday.kpi.engine.repository;
 
+import static net.arunoday.kpi.engine.entity.MetricResolution.MINUTE;
 import static org.junit.Assert.assertEquals;
 import net.arunoday.kpi.engine.entity.GaugeMetricEntity;
-import net.arunoday.kpi.engine.entity.MetricResolution;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,11 +27,11 @@ public class GaugeMetricRepositoryIT extends AbstractRepositoryIT {
 	@Test
 	public void testSave() {
 		GaugeMetricEntity event = new GaugeMetricEntity();
-		event.setResolution(MetricResolution.MINUTE);
+		event.setResolution(MINUTE);
 		event.setEventType("request1");
 
 		repository.save(event);
 
-		assertEquals("UnExpected Resolution ", MetricResolution.MINUTE.getCode(), event.getResolution().getCode());
+		assertEquals("UnExpected Resolution ", MINUTE.getCode(), event.getResolution().getCode());
 	}
 }
