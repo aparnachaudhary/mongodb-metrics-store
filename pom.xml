@@ -207,7 +207,6 @@
 						<artifactId>cobertura-maven-plugin</artifactId>
 						<configuration>
 							<format>xml</format>
-							<format>html</format>
 						</configuration>
 						<executions>
 							<execution>
