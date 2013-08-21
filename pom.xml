@@ -207,6 +207,7 @@
 						<artifactId>cobertura-maven-plugin</artifactId>
 						<configuration>
 							<format>xml</format>
+							<aggregate>true</aggregate>
 						</configuration>
 						<executions>
 							<execution>
