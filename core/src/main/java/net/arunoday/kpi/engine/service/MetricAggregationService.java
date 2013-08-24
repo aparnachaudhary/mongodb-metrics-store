@@ -1,6 +1,5 @@
 package net.arunoday.kpi.engine.service;
 
-import net.arunoday.kpi.engine.entity.MetricResolution;
 
 /**
  * Service API for metric aggregation.
@@ -11,7 +10,8 @@ import net.arunoday.kpi.engine.entity.MetricResolution;
 public interface MetricAggregationService {
 
 	/**
-	 * @param resolution
+	 * Calculate aggregates per minute and store in metrics collection.
+	 * 
 	 */
-	void performAggregation(MetricResolution resolution);
+	void performAggregationPerMinute();
 }

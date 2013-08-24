@@ -6,6 +6,7 @@ import net.arunoday.kpi.engine.repository.GaugeMetricRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
@@ -27,6 +28,7 @@ public class GaugeMetricRepositoryImpl implements GaugeMetricRepository<String> 
 	private static final Logger logger = LoggerFactory.getLogger(GaugeMetricRepositoryImpl.class);
 
 	@Autowired
+	@Qualifier("metricMongoTemplate")
 	private MongoTemplate mongoTemplate;
 
 	@Override

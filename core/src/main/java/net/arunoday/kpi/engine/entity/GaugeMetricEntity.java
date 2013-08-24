@@ -31,6 +31,15 @@ public class GaugeMetricEntity {
 		super();
 	}
 
+	public GaugeMetricEntity(String eventType, String resolution, Date timestamp, String operation, double value) {
+		super();
+		this.eventType = eventType;
+		this.resolution = resolution;
+		this.timestamp = timestamp;
+		this.operation = operation;
+		this.value = value;
+	}
+
 	public String getId() {
 		return id;
 	}

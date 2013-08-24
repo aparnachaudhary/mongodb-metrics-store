@@ -8,14 +8,25 @@ package net.arunoday.kpi.engine.entity;
  */
 public enum MetricResolution {
 
+	/** Yearly aggregate */
 	YEAR("y"),
 	/** Monthly aggregate */
-	MONTH("m"), WEEK("w"),
+	MONTH("m"),
+	/** Weekly aggregate */
+	WEEK("w"),
 	/** Daily Aggregate */
-	DAY("d"), HOUR("h"), MINUTE("m");
+	DAY("d"),
+	/** Hourly Aggregate */
+	HOUR("h"),
+	/** Aggregation per minute */
+	MINUTE("m");
 
 	private String code;
 
+	/**
+	 * Constructor
+	 * @param code metric code
+	 */
 	private MetricResolution(String code) {
 		this.code = code;
 	}

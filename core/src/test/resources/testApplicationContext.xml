@@ -25,6 +25,10 @@
 		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
 	</bean>
 
+	<bean id="metricMongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+	</bean>
+
 	<mongo:db-factory dbname="test" />
 
 	<mongo:repositories base-package="net.arunoday.kpi.engine.repository" />

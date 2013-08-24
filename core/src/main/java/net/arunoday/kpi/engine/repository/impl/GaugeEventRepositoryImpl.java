@@ -3,6 +3,10 @@ package net.arunoday.kpi.engine.repository.impl;
 import static net.arunoday.kpi.engine.entity.GaugeEventEntity.EVENT_TYPE_FIELD;
 import static net.arunoday.kpi.engine.entity.GaugeEventEntity.OCCURED_ON_FIELD;
 import static net.arunoday.kpi.engine.entity.GaugeEventEntity.VALUE_FIELD;
+import static net.arunoday.kpi.engine.entity.MetricOperation.AVG;
+import static net.arunoday.kpi.engine.entity.MetricOperation.MAX;
+import static net.arunoday.kpi.engine.entity.MetricOperation.MIN;
+import static net.arunoday.kpi.engine.entity.MetricOperation.SUM;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.util.ArrayList;
@@ -10,8 +14,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import net.arunoday.kpi.engine.entity.AggregationResult;
 import net.arunoday.kpi.engine.entity.GaugeEventEntity;
-import net.arunoday.kpi.engine.entity.MetricOperation;
 import net.arunoday.kpi.engine.repository.GaugeEventRepository;
 
 import org.slf4j.Logger;
@@ -85,7 +89,7 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 		List<String> collections = new ArrayList<String>();
 		for (String collectionName : mongoTemplate.getCollectionNames()) {
 			if (StringUtils.endsWithIgnoreCase(collectionName, EVENT_COLLECTION)) {
-				collections.add(collectionName);
+				collections.add(StringUtils.delete(collectionName, EVENT_COLLECTION));
 			}
 		}
 		return collections;
@@ -112,7 +116,7 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 	}
 
 	@Override
-	public Double performAggregation(String eventName, MetricOperation metricOperation, Date startDate, Date endDate) {
+	public AggregationResult performAggregation(String eventName, Date startDate, Date endDate) {
 		long lStartTime = System.currentTimeMillis();
 
 		Criteria criteria = Criteria.where(EVENT_TYPE_FIELD).is(eventName);
@@ -126,22 +130,38 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 		}
 		MatchOperation matchOperation = Aggregation.match(criteria);
 
-		GroupOperation groupOperation = Aggregation.group(EVENT_TYPE_FIELD).min(VALUE_FIELD)
-				.as(MetricOperation.MIN.getOperation()).max(VALUE_FIELD).as(MetricOperation.MAX.getOperation())
-				.avg(VALUE_FIELD).as(MetricOperation.AVG.getOperation()).sum(VALUE_FIELD)
-				.as(MetricOperation.SUM.getOperation());
+		GroupOperation groupOperation = Aggregation.group(EVENT_TYPE_FIELD).min(VALUE_FIELD).as(MIN.getOperation())
+				.max(VALUE_FIELD).as(MAX.getOperation()).avg(VALUE_FIELD).as(AVG.getOperation()).sum(VALUE_FIELD)
+				.as(SUM.getOperation());
 
 		AggregationOperation[] operations = { matchOperation, groupOperation, Aggregation.limit(1) };
 		Aggregation aggregation = Aggregation.newAggregation(operations);
 		AggregationResults<DBObject> result = mongoTemplate.aggregate(aggregation, getCollectionName(eventName),
 				DBObject.class);
 
-		Double resultValue = (Double) result.getUniqueMappedResult().get(metricOperation.getOperation());
+		logger.debug("Criteria used for aggregation : " + criteria.getCriteriaObject());
+		DBObject mappedResult = result.getUniqueMappedResult();
+
+		AggregationResult aggregationResult = new AggregationResult();
+		if (mappedResult != null) {
+			if (mappedResult.get(MIN.getOperation()) != null) {
+				aggregationResult.setMin((Double) mappedResult.get(MIN.getOperation()));
+			}
+			if (mappedResult.get(MAX.getOperation()) != null) {
+				aggregationResult.setMax((Double) mappedResult.get(MAX.getOperation()));
+			}
+			if (mappedResult.get(SUM.getOperation()) != null) {
+				aggregationResult.setSum((Double) mappedResult.get(SUM.getOperation()));
+			}
+			if (mappedResult.get(AVG.getOperation()) != null) {
+				aggregationResult.setAvg((Double) mappedResult.get(AVG.getOperation()));
+			}
+		}
 
 		long lEndTime = System.currentTimeMillis();
 		logger.debug(String.format("Total Time performAggregation(): %s msec ", (lEndTime - lStartTime)));
 
-		return resultValue;
+		return aggregationResult;
 	}
 
 	protected String getCollectionName(String eventName) {

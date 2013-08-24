@@ -3,10 +3,6 @@
  */
 package net.arunoday.kpi.engine.repository;
 
-import static net.arunoday.kpi.engine.entity.MetricOperation.AVG;
-import static net.arunoday.kpi.engine.entity.MetricOperation.MAX;
-import static net.arunoday.kpi.engine.entity.MetricOperation.MIN;
-import static net.arunoday.kpi.engine.entity.MetricOperation.SUM;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -16,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.arunoday.kpi.engine.entity.AggregationResult;
 import net.arunoday.kpi.engine.entity.ContextData;
 import net.arunoday.kpi.engine.entity.GaugeEventEntity;
 
@@ -119,8 +116,7 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 		repository.save(event1);
 		repository.save(event2);
 
-		assertEquals("Unexpected event types", Arrays.asList("request1_gauge_events", "request2_gauge_events"),
-				repository.findEventTypes());
+		assertEquals("Unexpected event types", Arrays.asList("request1", "request2"), repository.findEventTypes());
 	}
 
 	@Test
@@ -135,30 +131,24 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 			event = repository.save(event);
 		}
 
-		double minValue = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, MIN, startDate.toDate(), startDate
-				.plusSeconds(25).toDate());
-		assertEquals("Unexpected Min value", 1, minValue, 0.00);
-
-		double maxValue = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, MAX, startDate.toDate(), startDate
-				.plusSeconds(25).toDate());
-		assertEquals("Unexpected Max value", 24, maxValue, 0.00);
-
-		double avgValue = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, AVG, startDate.toDate(), startDate
-				.plusSeconds(25).toDate());
-		assertEquals("Unexpected Max value", 12.5, avgValue, 0.00);
-
-		double sum = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, SUM, startDate.toDate(),
+		AggregationResult aggregationResult = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, startDate.toDate(),
 				startDate.plusSeconds(25).toDate());
-		assertEquals("Unexpected Max value", 300, sum, 0.00);
+		assertEquals("Unexpected Min value", 1, aggregationResult.getMin(), 0.00);
 
-		assertEquals("Unexpected Max value", 300,
-				repository.performAggregation(EVENT_TYPE_HOMEREQUEST, SUM, startDate.toDate(), null), 0.00);
+		assertEquals("Unexpected Max value", 24, aggregationResult.getMax(), 0.00);
 
-		assertEquals("Unexpected Max value", 300,
-				repository.performAggregation(EVENT_TYPE_HOMEREQUEST, SUM, null, startDate.plusSeconds(25).toDate()), 0.00);
+		assertEquals("Unexpected Avg value", 12.5, aggregationResult.getAvg(), 0.00);
 
-		assertEquals("Unexpected Max value", 300, repository.performAggregation(EVENT_TYPE_HOMEREQUEST, SUM, null, null),
-				0.00);
+		assertEquals("Unexpected Sum value", 300, aggregationResult.getSum(), 0.00);
+
+		assertEquals("Unexpected Sum value", 300,
+				repository.performAggregation(EVENT_TYPE_HOMEREQUEST, startDate.toDate(), null).getSum(), 0.00);
+
+		assertEquals("Unexpected Sum value", 300,
+				repository.performAggregation(EVENT_TYPE_HOMEREQUEST, null, startDate.plusSeconds(25).toDate()).getSum(), 0.00);
+
+		assertEquals("Unexpected Sum value", 300, repository.performAggregation(EVENT_TYPE_HOMEREQUEST, null, null)
+				.getSum(), 0.00);
 	}
 
 	private void storeEvents(int count, DateTime startDate, String requestType) {
