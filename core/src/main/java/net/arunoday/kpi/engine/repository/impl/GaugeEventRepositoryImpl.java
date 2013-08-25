@@ -168,10 +168,39 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 	}
 
 	@Override
+	public void aggregatePerMinute(String eventName, Date startDate, Date endDate) {
+		Criteria criteria = Criteria.where(EVENT_TYPE_FIELD).is(eventName);
+		if (startDate != null && endDate != null) {
+			criteria.andOperator(Criteria.where(OCCURED_ON_FIELD).gte(startDate), Criteria.where(OCCURED_ON_FIELD)
+					.lt(endDate));
+		} else if (startDate != null) {
+			criteria.andOperator(Criteria.where(OCCURED_ON_FIELD).gte(startDate));
+		} else if (endDate != null) {
+			criteria.andOperator(Criteria.where(OCCURED_ON_FIELD).lt(endDate));
+		}
+		logger.debug("Criteria used for minute-wise aggregation : " + criteria.getCriteriaObject());
+
+		MapReduceResults<AggregatedValue> results = mongoTemplate.mapReduce(
+				new Query(criteria),
+				getCollectionName(eventName),
+				"classpath:minute_map_function.js",
+				"classpath:reduce_function.js",
+				new MapReduceOptions().outputCollection(eventName.concat(".minute")).outputTypeMerge()
+						.finalizeFunction("classpath:finalize_function.js"), AggregatedValue.class);
+
+		for (AggregatedValue valueObject : results) {
+			logger.debug("Minute-wise aggregation: " + valueObject);
+		}
+	}
+
+	@Override
 	public void aggregatePerHour(String eventName, Date startDate, Date endDate) {
-		MapReduceResults<AggregatedValue> results = mongoTemplate.mapReduce(getCollectionName(eventName),
-				"classpath:hourly_map_function.js", "classpath:hourly_reduce_function.js", new MapReduceOptions()
-						.outputCollection(eventName.concat(".hourly")).outputTypeMerge(), AggregatedValue.class);
+		MapReduceResults<AggregatedValue> results = mongoTemplate.mapReduce(
+				eventName.concat(".minute"),
+				"classpath:hourly_map_function.js",
+				"classpath:reduce_function.js",
+				new MapReduceOptions().outputCollection(eventName.concat(".hourly")).outputTypeMerge()
+						.finalizeFunction("classpath:finalize_function.js"), AggregatedValue.class);
 
 		for (AggregatedValue valueObject : results) {
 			logger.debug("Hourly aggregation: " + valueObject);

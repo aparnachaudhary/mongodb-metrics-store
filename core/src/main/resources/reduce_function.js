@@ -1,6 +1,6 @@
 function(key, values) {
 
-	var res = { total: 0, count: 0, min: 0, max: 0, ts: null };
+	var res = { total: 0, count: 0, min: 0, max: 0, mean:0, ts: null };
     values.forEach(function(v) {
     	if ( v.total > 0 ){
 		    res.total += v.total;

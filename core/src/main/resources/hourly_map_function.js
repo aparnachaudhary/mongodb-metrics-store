@@ -1,16 +1,17 @@
 function () {
     var key = new Date(
-        this.occuredOn.getFullYear(),
-        this.occuredOn.getMonth(),
-        this.occuredOn.getDate(),
-        this.occuredOn.getHours(),
+        this._id.getFullYear(),
+        this._id.getMonth(),
+        this._id.getDate(),
+        this._id.getHours(),
         0, 0, 0)
 
     var value = {
-        total: this.value,
-        count: 1,
-        min: this.value,
-        max: this.value,
+        total: this.value.total,
+        count: this.value.count,
+        min: this.value.min,
+        max: this.value.max,
+        mean: 0,
         ts: new Date()
 	};
                 
