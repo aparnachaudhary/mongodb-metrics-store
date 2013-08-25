@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import net.arunoday.kpi.engine.entity.AggregatedValue;
 import net.arunoday.kpi.engine.entity.AggregationResult;
 import net.arunoday.kpi.engine.entity.GaugeEventEntity;
 import net.arunoday.kpi.engine.repository.GaugeEventRepository;
@@ -27,6 +28,8 @@ import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.mapreduce.MapReduceOptions;
+import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -162,6 +165,17 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 		logger.debug(String.format("Total Time performAggregation(): %s msec ", (lEndTime - lStartTime)));
 
 		return aggregationResult;
+	}
+
+	@Override
+	public void aggregatePerHour(String eventName, Date startDate, Date endDate) {
+		MapReduceResults<AggregatedValue> results = mongoTemplate.mapReduce(getCollectionName(eventName),
+				"classpath:hourly_map_function.js", "classpath:hourly_reduce_function.js", new MapReduceOptions()
+						.outputCollection(eventName.concat(".hourly")).outputTypeMerge(), AggregatedValue.class);
+
+		for (AggregatedValue valueObject : results) {
+			logger.debug("Hourly aggregation: " + valueObject);
+		}
 	}
 
 	protected String getCollectionName(String eventName) {
