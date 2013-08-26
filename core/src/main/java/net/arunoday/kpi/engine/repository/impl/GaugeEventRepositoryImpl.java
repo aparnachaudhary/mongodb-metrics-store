@@ -207,6 +207,20 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 		}
 	}
 
+	@Override
+	public void aggregatePerDay(String eventName, Date startDate, Date endDate) {
+		MapReduceResults<AggregatedValue> results = mongoTemplate.mapReduce(
+				eventName.concat(".hourly"),
+				"classpath:daily_map_function.js",
+				"classpath:reduce_function.js",
+				new MapReduceOptions().outputCollection(eventName.concat(".daily")).outputTypeMerge()
+						.finalizeFunction("classpath:finalize_function.js"), AggregatedValue.class);
+
+		for (AggregatedValue valueObject : results) {
+			logger.debug("Daily aggregation: " + valueObject);
+		}
+	}
+
 	protected String getCollectionName(String eventName) {
 		Assert.notNull(eventName, "eventName must not be null!");
 		return eventName.concat(EVENT_COLLECTION);

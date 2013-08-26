@@ -24,6 +24,15 @@ public class MetricAggregationServiceImpl implements MetricAggregationService {
 	private GaugeMetricRepository<String> gaugeMetricRepository;
 
 	@Override
+	@Scheduled(cron = "0 0/1 * * * ?")
+	public void performAggregationPerMinute() {
+		DateTime startDate = new DateTime();
+		for (String eventType : gaugeEventRepository.findEventTypes()) {
+			gaugeEventRepository.aggregatePerMinute(eventType, startDate.minusSeconds(60).toDate(), startDate.toDate());
+		}
+	}
+
+	@Override
 	@Scheduled(cron = "0 0 0 * * ?")
 	public void performAggregationPerHour() {
 		// sec min hour day day_of_month month day_of_week year
@@ -34,11 +43,12 @@ public class MetricAggregationServiceImpl implements MetricAggregationService {
 	}
 
 	@Override
-	@Scheduled(cron = "0 0/1 * * * ?")
-	public void performAggregationPerMinute() {
+	@Scheduled(cron = "0 0 0 0 * ?")
+	public void performAggregationPerDay() {
+		// sec min hour day day_of_month month day_of_week year
 		DateTime startDate = new DateTime();
 		for (String eventType : gaugeEventRepository.findEventTypes()) {
-			gaugeEventRepository.aggregatePerMinute(eventType, startDate.minusSeconds(60).toDate(), startDate.toDate());
+			gaugeEventRepository.aggregatePerHour(eventType, startDate.minusMinutes(60).toDate(), startDate.toDate());
 		}
 	}
 }

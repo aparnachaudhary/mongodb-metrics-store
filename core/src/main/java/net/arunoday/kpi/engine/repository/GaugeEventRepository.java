@@ -138,4 +138,12 @@ public interface GaugeEventRepository<ID extends Serializable> {
 	 */
 	void aggregatePerHour(String eventName, Date startDate, Date endDate);
 
+	/**
+	 * Performs daily aggregation for the given event type.
+	 * 
+	 * @param eventName name of the event for which aggregation is required
+	 * @param startDate start date for event filtering; date is inclusive; ignored if null.
+	 * @param endDate end date for event filtering; date is exclusive; ignored if null.
+	 */
+	void aggregatePerDay(String eventName, Date startDate, Date endDate);
 }

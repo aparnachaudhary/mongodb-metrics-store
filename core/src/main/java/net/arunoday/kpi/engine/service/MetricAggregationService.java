@@ -10,14 +10,20 @@ package net.arunoday.kpi.engine.service;
 public interface MetricAggregationService {
 
 	/**
+	 * Calculate aggregates per minute and store in metrics collection.
+	 * 
+	 */
+	void performAggregationPerMinute();
+
+	/**
 	 * Calculate aggregates per hour and store in metrics collection.
 	 * 
 	 */
 	void performAggregationPerHour();
 
 	/**
-	 * Calculate aggregates per minute and store in metrics collection.
+	 * Calculate aggregates per day and store in metrics collection.
 	 * 
 	 */
-	void performAggregationPerMinute();
+	void performAggregationPerDay();
 }
