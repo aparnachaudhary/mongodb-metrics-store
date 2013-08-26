@@ -9,7 +9,6 @@ This project provides a storage engine based on MongoDB for timeseries event dat
 
 === Building: ===
 image::https://travis-ci.org/aparnachaudhary/mongodb-metrics-store.png?branch=master["Build Status", link="https://travis-ci.org/aparnachaudhary/mongodb-metrics-store"]
-image::https://coveralls.io/repos/aparnachaudhary/mongodb-metrics-store/badge.png?branch=master["Build Status", link="https://coveralls.io/r/aparnachaudhary/mongodb-metrics-store?branch=master"]
 
 To build, issue this from the command line:
 [source]
