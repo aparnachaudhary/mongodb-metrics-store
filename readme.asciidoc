@@ -4,7 +4,7 @@ This project provides a storage engine based on MongoDB for timeseries event dat
 
 === Requirements: ===
 * Apache Maven version 3
-* Spring Data MongoDB 1.3.0.RC1
+* Spring Data MongoDB 1.4.0.M1
 * MongoDB 2.0.7 or later
 
 === Building: ===
