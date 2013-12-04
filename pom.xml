@@ -28,8 +28,8 @@
 		<slf4j.version>1.6.6</slf4j.version>
 		<log4back.version>1.0.6</log4back.version>
 		<spring.version>3.2.3.RELEASE</spring.version>
-		<spring.data.mongo.version>1.3.0.RC1</spring.data.mongo.version>
-		<spring.data.commons.version>1.6.0.RC1</spring.data.commons.version>
+		<spring.data.mongo.version>1.4.0.M1</spring.data.mongo.version>
+		<spring.data.commons.version>1.7.0.M1</spring.data.commons.version>
 		<jetty.version>6.1.22</jetty.version>
 	</properties>
 
