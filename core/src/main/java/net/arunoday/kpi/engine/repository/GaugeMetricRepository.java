@@ -1,6 +1,7 @@
 package net.arunoday.kpi.engine.repository;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import net.arunoday.kpi.engine.entity.GaugeMetricEntity;
 
@@ -18,6 +19,7 @@ import com.mongodb.DBObject;
 public interface GaugeMetricRepository<ID extends Serializable> {
 
 	static final String METRICS_COLLECTION = "_gauge_metrics";
+	static final String EVENT_COLLECTION = "_gauge_events";
 
 	/**
 	 * Saves a given metric entity. Use the returned instance for further operations as the save operation might have
@@ -35,5 +37,32 @@ public interface GaugeMetricRepository<ID extends Serializable> {
 	 * @return result of aggregation
 	 */
 	AggregationResults<DBObject> performAggregation(AggregationOperation[] operations);
+
+	/**
+	 * Performs minute-wise aggregation for the given event type.
+	 * 
+	 * @param eventName name of the event for which aggregation is required
+	 * @param startDate start date for event filtering; date is inclusive; ignored if null.
+	 * @param endDate end date for event filtering; date is exclusive; ignored if null.
+	 */
+	void aggregatePerMinute(String eventName, Date startDate, Date endDate);
+
+	/**
+	 * Performs hourly aggregation for the given event type.
+	 * 
+	 * @param eventName name of the event for which aggregation is required
+	 * @param startDate start date for event filtering; date is inclusive; ignored if null.
+	 * @param endDate end date for event filtering; date is exclusive; ignored if null.
+	 */
+	void aggregatePerHour(String eventName, Date startDate, Date endDate);
+
+	/**
+	 * Performs daily aggregation for the given event type.
+	 * 
+	 * @param eventName name of the event for which aggregation is required
+	 * @param startDate start date for event filtering; date is inclusive; ignored if null.
+	 * @param endDate end date for event filtering; date is exclusive; ignored if null.
+	 */
+	void aggregatePerDay(String eventName, Date startDate, Date endDate);
 
 }

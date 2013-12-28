@@ -14,6 +14,7 @@ import net.arunoday.kpi.engine.repository.CounterEventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -40,6 +41,7 @@ public class CounterEventRepositoryImpl implements CounterEventRepository<String
 	private static final Logger logger = LoggerFactory.getLogger(CounterEventRepositoryImpl.class);
 
 	@Autowired
+	@Qualifier("eventMongoTemplate")
 	private MongoTemplate mongoTemplate;
 
 	@Override

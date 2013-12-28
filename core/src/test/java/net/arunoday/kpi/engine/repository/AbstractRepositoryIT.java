@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
 public abstract class AbstractRepositoryIT {
 
 	@Autowired
-	@Qualifier("mongoTemplate")
+	@Qualifier("eventMongoTemplate")
 	private MongoOperations mongoOperations;
 
 	/**

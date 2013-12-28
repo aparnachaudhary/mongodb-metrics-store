@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import net.arunoday.kpi.engine.entity.AggregatedValue;
 import net.arunoday.kpi.engine.entity.AggregationResult;
 import net.arunoday.kpi.engine.entity.GaugeEventEntity;
 import net.arunoday.kpi.engine.repository.GaugeEventRepository;
@@ -22,13 +21,13 @@ import net.arunoday.kpi.engine.repository.GaugeEventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
-import org.springframework.data.mongodb.core.mapreduce.MapReduceOptions;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -49,6 +48,7 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 	private static final Logger logger = LoggerFactory.getLogger(GaugeEventRepositoryImpl.class);
 
 	@Autowired
+	@Qualifier("eventMongoTemplate")
 	private MongoTemplate mongoTemplate;
 
 	@Override
@@ -166,63 +166,9 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 		return aggregationResult;
 	}
 
-	@Override
-	public void aggregatePerMinute(String eventName, Date startDate, Date endDate) {
-		long lStartTime = System.currentTimeMillis();
-		Criteria criteria = Criteria.where(EVENT_TYPE_FIELD).is(eventName);
-		criteria = prepareDateCriteria(criteria, OCCURED_ON_FIELD, startDate, endDate);
-		mongoTemplate.mapReduce(new Query(criteria), getCollectionName(eventName), "classpath:minute_map_function.js",
-				"classpath:reduce_function.js", new MapReduceOptions().outputCollection(eventName.concat(".minute"))
-						.outputTypeMerge().finalizeFunction("classpath:finalize_function.js"), AggregatedValue.class);
-
-		long lEndTime = System.currentTimeMillis();
-		logger.debug(String.format("Total time aggregatePerMinute(): %s msec ", (lEndTime - lStartTime)));
-	}
-
-	@Override
-	public void aggregatePerHour(String eventName, Date startDate, Date endDate) {
-		long lStartTime = System.currentTimeMillis();
-
-		Criteria criteria = new Criteria();
-		criteria = prepareDateCriteria(criteria, "value.ts", startDate, endDate);
-		mongoTemplate.mapReduce(new Query(criteria), eventName.concat(".minute"), "classpath:hourly_map_function.js",
-				"classpath:reduce_function.js", new MapReduceOptions().outputCollection(eventName.concat(".hourly"))
-						.outputTypeMerge().finalizeFunction("classpath:finalize_function.js"), AggregatedValue.class);
-
-		long lEndTime = System.currentTimeMillis();
-		logger.debug(String.format("Total time aggregatePerHour(): %s msec ", (lEndTime - lStartTime)));
-	}
-
-	@Override
-	public void aggregatePerDay(String eventName, Date startDate, Date endDate) {
-		long lStartTime = System.currentTimeMillis();
-
-		Criteria criteria = new Criteria();
-		criteria = prepareDateCriteria(criteria, "value.ts", startDate, endDate);
-		mongoTemplate.mapReduce(new Query(criteria), eventName.concat(".hourly"), "classpath:daily_map_function.js",
-				"classpath:reduce_function.js", new MapReduceOptions().outputCollection(eventName.concat(".daily"))
-						.outputTypeMerge().finalizeFunction("classpath:finalize_function.js"), AggregatedValue.class);
-
-		long lEndTime = System.currentTimeMillis();
-		logger.debug(String.format("Total time aggregatePerDay(): %s msec ", (lEndTime - lStartTime)));
-	}
-
 	protected String getCollectionName(String eventName) {
 		Assert.notNull(eventName, "eventName must not be null!");
 		return eventName.concat(EVENT_COLLECTION);
-	}
-
-	private Criteria prepareDateCriteria(Criteria criteria, String dateField, Date startDate, Date endDate) {
-		if (startDate != null && endDate != null) {
-			criteria.andOperator(Criteria.where(dateField).gte(startDate), Criteria.where(dateField)
-					.lt(endDate));
-		} else if (startDate != null) {
-			criteria.andOperator(Criteria.where(dateField).gte(startDate));
-		} else if (endDate != null) {
-			criteria.andOperator(Criteria.where(dateField).lt(endDate));
-		}
-		logger.debug("Criteria used for aggregation : " + criteria.getCriteriaObject());
-		return criteria;
 	}
 
 }

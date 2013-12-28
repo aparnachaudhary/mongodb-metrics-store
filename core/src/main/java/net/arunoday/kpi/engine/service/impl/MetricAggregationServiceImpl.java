@@ -1,6 +1,7 @@
 package net.arunoday.kpi.engine.service.impl;
 
 import net.arunoday.kpi.engine.repository.GaugeEventRepository;
+import net.arunoday.kpi.engine.repository.GaugeMetricRepository;
 import net.arunoday.kpi.engine.service.MetricAggregationService;
 
 import org.joda.time.DateTime;
@@ -18,13 +19,15 @@ public class MetricAggregationServiceImpl implements MetricAggregationService {
 
 	@Autowired
 	private GaugeEventRepository<String> gaugeEventRepository;
+	@Autowired
+	private GaugeMetricRepository<String> gaugeMetricRepository;
 
 	@Override
 	@Scheduled(cron = "0 0-59 * * * *")
 	public void performAggregationPerMinute() {
 		DateTime startDate = new DateTime();
 		for (String eventType : gaugeEventRepository.findEventTypes()) {
-			gaugeEventRepository.aggregatePerMinute(eventType, startDate.minusSeconds(60).toDate(), startDate.toDate());
+			gaugeMetricRepository.aggregatePerMinute(eventType, startDate.minusSeconds(60).toDate(), startDate.toDate());
 		}
 	}
 
@@ -33,7 +36,7 @@ public class MetricAggregationServiceImpl implements MetricAggregationService {
 	public void performAggregationPerHour() {
 		DateTime startDate = new DateTime();
 		for (String eventType : gaugeEventRepository.findEventTypes()) {
-			gaugeEventRepository.aggregatePerHour(eventType, startDate.minusMinutes(60).toDate(), startDate.toDate());
+			gaugeMetricRepository.aggregatePerHour(eventType, startDate.minusMinutes(60).toDate(), startDate.toDate());
 		}
 	}
 
@@ -42,7 +45,7 @@ public class MetricAggregationServiceImpl implements MetricAggregationService {
 	public void performAggregationPerDay() {
 		DateTime startDate = new DateTime();
 		for (String eventType : gaugeEventRepository.findEventTypes()) {
-			gaugeEventRepository.aggregatePerHour(eventType, startDate.minusHours(24).toDate(), startDate.toDate());
+			gaugeMetricRepository.aggregatePerHour(eventType, startDate.minusHours(24).toDate(), startDate.toDate());
 		}
 	}
 }
