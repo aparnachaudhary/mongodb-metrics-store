@@ -51,6 +51,10 @@ Following aggregations are supported:
 * Yearly
 
 For each event type; aggregation results are stored in separate collections in +metricstore+ database. e.g. +request.minute+ +request.hourly+ +request.daily+ +request.monthly+ and +request.yearly+
+For generating minute wise aggregations, event data is used. But for hourly aggregations, instead of using event data stream; minute wise aggregations are used. Same approach is used for further aggregations.
+
+
+image::HierarchialAggregation.jpg[]
 
 
 [source, js]
