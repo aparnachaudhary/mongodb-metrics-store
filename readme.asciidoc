@@ -19,7 +19,54 @@ mvn clean install
 
 === How it works: ===
 
-TODO
+==== Gauge Event ====
+
+Event data stream is represented as +GaugeEvent+. Event can be represented in the form of following JSON structure. Gauge event has a +value+ field stored as +double+ and optionally context data can be stored in the form of map construct. Events are stored in their separate collections.
+e.g. for event with name 'request'; a collection with name +request_gauge_events+ is created in the +eventstore+ database.
+
+[source, js]
+----
+{
+    "_id" : ObjectId("52bede0cc2e6f68c4ad8b7a6"),
+    "_class" : "net.arunoday.kpi.engine.entity.GaugeEventEntity",
+    "occuredOn" : ISODate("2013-12-28T14:19:56Z"),
+    "eventType" : "request",
+    "value" : 1,
+    "contextData" : {
+        "index" : 1
+    }
+}
+----
+
+==== Gauge Metric ====
+
+Metrics (min, max, avg, sum) are calculated based on the event input. Metrics are calculated using hierarchial aggregations. 
+
+Following aggregations are supported:
+
+* Minute-wise
+* Hourly
+* Daily
+* Monthly
+* Yearly
+
+For each event type; aggregation results are stored in separate collections in +metricstore+ database. e.g. +request.minute+ +request.hourly+ +request.daily+ +request.monthly+ and +request.yearly+
+
+
+[source, js]
+----
+{
+    "_id" : ISODate("2013-12-28T13:56:00Z"),
+    "value" : {
+        "total" : 7170,
+        "count" : 12,
+        "min" : 0,
+        "max" : 603,
+        "mean" : 597.5,
+        "ts" : ISODate("2013-12-28T13:57:00Z")
+    }
+}
+----
 
 === Licensing and Copyright: ===
 
