@@ -31,6 +31,6 @@
 
 	<mongo:db-factory dbname="test" />
 
-	<mongo:repositories base-package="net.arunoday.kpi.engine.repository" />
+	<mongo:repositories base-package="net.arunoday.metric.store.repository" />
 
 </beans>

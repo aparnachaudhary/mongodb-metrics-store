@@ -53,6 +53,6 @@
 
 	<mongo:db-factory id="metricMongoFactory" dbname="${mongo.metric.database}" mongo-ref="metricMongo"/>
 
-	<mongo:repositories base-package="net.arunoday.kpi.engine.repository" />
+	<mongo:repositories base-package="net.arunoday.metric.store.repository" />
 
 </beans>
