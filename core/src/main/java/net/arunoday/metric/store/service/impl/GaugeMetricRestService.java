@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * REST service for gauge metric.
+ * 
  * @author Aparna Chaudhary
  */
 @RestController
@@ -23,6 +25,17 @@ public class GaugeMetricRestService {
 
 	// TODO: Date validations
 
+	/**
+	 * Provides the gauge metric for the given time.
+	 * 
+	 * @param eventId name of the event
+	 * @param year year in 4 digit format
+	 * @param month the month of the year, from 1 to 12
+	 * @param day the day of the month, from 1 to 31
+	 * @param hour the hour of the day, from 0 to 23
+	 * @param minute the minute of the hour, from 0 to 59
+	 * @return gauge metric for the given time
+	 */
 	@RequestMapping(value = "/metric/minute/{eventId}/{year}/{month}/{day}/{hour}/{minute}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Iterable<AggregatedValue> listMinuteAggregations(@PathVariable("eventId") String eventId,
 			@PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("day") int day,
@@ -161,6 +174,13 @@ public class GaugeMetricRestService {
 		return metricRepository.find(eventId, MetricResolution.MONTH, startDate.toDate(), endDate.toDate());
 	}
 
+	/**
+	 * Provides the gauge metric for the given year.
+	 * 
+	 * @param eventId name of the event
+	 * @param year year in 4 digit format
+	 * @return gauge metric aggregations for the given year
+	 */
 	@RequestMapping(value = "/metric/yearly/{eventId}/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Iterable<AggregatedValue> listYearlyAggregations(@PathVariable("eventId") String eventId,
 			@PathVariable("year") int year) {
