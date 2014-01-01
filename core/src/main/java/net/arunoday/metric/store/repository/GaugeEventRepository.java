@@ -30,15 +30,6 @@ public interface GaugeEventRepository<ID extends Serializable> {
 	GaugeEventEntity save(GaugeEventEntity entity);
 
 	/**
-	 * Saves all given entities.
-	 * 
-	 * @param entities gauge event entities to be stored
-	 * @return the saved entities
-	 * @throws IllegalArgumentException in case the given entity is (@literal null}.
-	 */
-	Iterable<GaugeEventEntity> save(Iterable<GaugeEventEntity> entities);
-
-	/**
 	 * Retrieves an entity by its id and event name.
 	 * 
 	 * @param id must not be {@literal null}.
@@ -83,23 +74,6 @@ public interface GaugeEventRepository<ID extends Serializable> {
 	 * @return the number of entities
 	 */
 	long count(String eventType);
-
-	/**
-	 * Deletes the entity with the given id and event name
-	 * 
-	 * @param id must not be {@literal null}.
-	 * @param eventType event name must not be {@literal null}.
-	 * @throws IllegalArgumentException in case the given {@code id} is {@literal null}
-	 */
-	void delete(ID id, String eventType);
-
-	/**
-	 * Deletes a given entity.
-	 * 
-	 * @param entity gauge event to delete
-	 * @throws IllegalArgumentException in case the given entity is (@literal null}.
-	 */
-	void delete(GaugeEventEntity entity);
 
 	/**
 	 * Deletes all entities managed by the repository for the given event name.

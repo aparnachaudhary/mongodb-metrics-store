@@ -19,7 +19,7 @@ public abstract class AbstractRepositoryIT {
 
 	@Autowired
 	@Qualifier("eventMongoTemplate")
-	private MongoOperations mongoOperations;
+	protected MongoOperations mongoOperations;
 
 	/**
 	 * Cleans up database

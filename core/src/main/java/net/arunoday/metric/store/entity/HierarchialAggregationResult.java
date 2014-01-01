@@ -24,6 +24,26 @@ public class HierarchialAggregationResult {
 		this.value = value;
 	}
 
+	/**
+	 * Checks if this result contains a given field
+	 * 
+	 * @param field field name
+	 * @return if the field exists
+	 */
+	public boolean containsField(String field) {
+		return value.containsKey(field);
+	}
+
+	/**
+	 * Gets a value for the specific key
+	 * 
+	 * @param key field name
+	 * @return the value
+	 */
+	public Object get(String key) {
+		return value.get(key);
+	}
+
 	@Override
 	public String toString() {
 		return "Result [id=" + id + ", value=" + value + "]";

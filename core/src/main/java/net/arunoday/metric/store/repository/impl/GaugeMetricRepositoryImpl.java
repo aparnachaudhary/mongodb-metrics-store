@@ -48,7 +48,7 @@ public class GaugeMetricRepositoryImpl implements GaugeMetricRepository<String> 
 	public Iterable<HierarchialAggregationResult> find(String eventName, MetricResolution resolution, Date startTime,
 			Date endTime) {
 		Query query = new Query().addCriteria(new Criteria("_id").gte(startTime).lt(endTime));
-		logger.debug("Criteria for metric query " + query);
+		logger.debug(String.format("Criteria for event [%s] aggregation query %s ", eventName, query));
 		List<HierarchialAggregationResult> result = metricMongoTemplate.find(query, HierarchialAggregationResult.class,
 				getCollection(eventName, resolution));
 		return result;

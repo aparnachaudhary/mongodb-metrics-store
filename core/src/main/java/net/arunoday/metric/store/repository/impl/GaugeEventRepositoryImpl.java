@@ -1,7 +1,6 @@
 package net.arunoday.metric.store.repository.impl;
 
 import static net.arunoday.metric.store.entity.GaugeEventEntity.OCCURED_ON_FIELD;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,17 +38,6 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 	}
 
 	@Override
-	public Iterable<GaugeEventEntity> save(Iterable<GaugeEventEntity> entities) {
-		Assert.notNull(entities, "The given Iterable of entities can not be null!");
-		List<GaugeEventEntity> result = new ArrayList<GaugeEventEntity>();
-		for (GaugeEventEntity entity : entities) {
-			save(entity);
-			result.add(entity);
-		}
-		return result;
-	}
-
-	@Override
 	public GaugeEventEntity findOne(String id, String eventType) {
 		return mongoTemplate.findById(id, GaugeEventEntity.class, getCollectionName(eventType));
 	}
@@ -81,16 +69,6 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 	@Override
 	public long count(String eventName) {
 		return mongoTemplate.getCollection(getCollectionName(eventName)).count();
-	}
-
-	@Override
-	public void delete(String id, String eventName) {
-		mongoTemplate.remove(new Query(where("id").is(id)), getCollectionName(eventName));
-	}
-
-	@Override
-	public void delete(GaugeEventEntity entity) {
-		delete(entity.getId(), entity.getEventType());
 	}
 
 	@Override
