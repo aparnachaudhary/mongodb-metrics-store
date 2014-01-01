@@ -32,8 +32,7 @@ import com.mongodb.DBObject;
 /**
  * Default MongoDB implementation for {@link CounterEventRepository}
  * 
- * @author Aparna
- * 
+ * @author Aparna Chaudhary
  */
 @Repository
 public class CounterEventRepositoryImpl implements CounterEventRepository<String> {
@@ -46,7 +45,7 @@ public class CounterEventRepositoryImpl implements CounterEventRepository<String
 
 	@Override
 	public CounterEventEntity save(CounterEventEntity entity, boolean isDecrement) {
-		Assert.notNull(entity, "The given entity can not be null!");
+		Assert.notNull(entity, "The given entity must not be null!");
 
 		Query query = new Query(where(EVENT_TYPE_FIELD).is(entity.getEventType()));
 		query = query.with(new Sort(Sort.Direction.DESC, OCCURED_ON_FIELD));

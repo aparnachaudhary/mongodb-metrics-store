@@ -3,8 +3,7 @@ package net.arunoday.metric.store.entity;
 /**
  * DTO to represent aggregation results.
  * 
- * @author Aparna
- * 
+ * @author Aparna Chaudhary
  */
 public class AggregationResult {
 

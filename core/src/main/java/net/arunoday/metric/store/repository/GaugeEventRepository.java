@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
-import net.arunoday.metric.store.entity.AggregationResult;
 import net.arunoday.metric.store.entity.GaugeEventEntity;
 
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -108,15 +107,5 @@ public interface GaugeEventRepository<ID extends Serializable> {
 	 * @param eventType event name must not be {@literal null}.
 	 */
 	void deleteAll(String eventType);
-
-	/**
-	 * Performs aggregation based for supported metric operations.
-	 * 
-	 * @param eventName name of the event for which aggregation is required
-	 * @param startDate start date for event filtering; date is inclusive; ignored if null.
-	 * @param endDate end date for event filtering; date is exclusive; ignored if null.
-	 * @return result of aggregation
-	 */
-	AggregationResult performAggregation(String eventName, Date startDate, Date endDate);
 
 }

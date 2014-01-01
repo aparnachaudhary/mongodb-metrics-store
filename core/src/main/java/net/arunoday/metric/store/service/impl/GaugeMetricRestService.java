@@ -1,7 +1,11 @@
 package net.arunoday.metric.store.service.impl;
 
-import net.arunoday.metric.store.entity.AggregatedValue;
-import net.arunoday.metric.store.entity.MetricResolution;
+import static net.arunoday.metric.store.entity.MetricResolution.DAY;
+import static net.arunoday.metric.store.entity.MetricResolution.HOUR;
+import static net.arunoday.metric.store.entity.MetricResolution.MINUTE;
+import static net.arunoday.metric.store.entity.MetricResolution.MONTH;
+import static net.arunoday.metric.store.entity.MetricResolution.YEAR;
+import net.arunoday.metric.store.entity.HierarchialAggregationResult;
 import net.arunoday.metric.store.repository.GaugeMetricRepository;
 
 import org.joda.time.DateTime;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Aparna Chaudhary
  */
 @RestController
+@RequestMapping(value = "/metric")
 public class GaugeMetricRestService {
 
 	@Autowired
@@ -36,159 +41,233 @@ public class GaugeMetricRestService {
 	 * @param minute the minute of the hour, from 0 to 59
 	 * @return gauge metric for the given time
 	 */
-	@RequestMapping(value = "/metric/minute/{eventId}/{year}/{month}/{day}/{hour}/{minute}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Iterable<AggregatedValue> listMinuteAggregations(@PathVariable("eventId") String eventId,
+	@RequestMapping(value = "/minute/{eventId}/{year}/{month}/{day}/{hour}/{minute}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Iterable<HierarchialAggregationResult> listMinuteAggregations(@PathVariable("eventId") String eventId,
 			@PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("day") int day,
 			@PathVariable("hour") int hour, @PathVariable("minute") int minute) {
-		if (year == 0) {
-			throw new IllegalArgumentException("'year' cannot be zero.");
-		}
+		validateYear(year);
 		DateTime startDate = new DateTime(year, month, day, hour, minute);
 		DateTime endDate = startDate.plusMinutes(1);
-		return metricRepository.find(eventId, MetricResolution.MINUTE, startDate.toDate(), endDate.toDate());
-	}
-
-	@RequestMapping(value = "/metric/minute/{eventId}/{year}/{month}/{day}/{hour}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Iterable<AggregatedValue> listMinuteAggregations(@PathVariable("eventId") String eventId,
-			@PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("day") int day,
-			@PathVariable("hour") int hour) {
-		if (year == 0) {
-			throw new IllegalArgumentException("'year' cannot be zero.");
-		}
-		DateTime startDate = new DateTime(year, month, day, hour, 0);
-		DateTime endDate = startDate.plusHours(1);
-		return metricRepository.find(eventId, MetricResolution.MINUTE, startDate.toDate(), endDate.toDate());
-	}
-
-	@RequestMapping(value = "/metric/minute/{eventId}/{year}/{month}/{day}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Iterable<AggregatedValue> listMinuteAggregations(@PathVariable("eventId") String eventId,
-			@PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("day") int day) {
-		if (year == 0) {
-			throw new IllegalArgumentException("'year' cannot be zero.");
-		}
-		DateTime startDate = new DateTime(year, month, day, 0, 0);
-		DateTime endDate = startDate.plusDays(1);
-		return metricRepository.find(eventId, MetricResolution.MINUTE, startDate.toDate(), endDate.toDate());
-	}
-
-	@RequestMapping(value = "/metric/minute/{eventId}/{year}/{month}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Iterable<AggregatedValue> listMinuteAggregations(@PathVariable("eventId") String eventId,
-			@PathVariable("year") int year, @PathVariable("month") int month) {
-		if (year == 0) {
-			throw new IllegalArgumentException("'year' cannot be zero.");
-		}
-		DateTime startDate = new DateTime(year, month, 1, 0, 0);
-		DateTime endDate = startDate.plusMonths(1);
-		return metricRepository.find(eventId, MetricResolution.MINUTE, startDate.toDate(), endDate.toDate());
-	}
-
-	@RequestMapping(value = "/metric/hourly/{eventId}/{year}/{month}/{day}/{hour}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Iterable<AggregatedValue> listHourlyAggregations(@PathVariable("eventId") String eventId,
-			@PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("day") int day,
-			@PathVariable("hour") int hour) {
-		if (year == 0) {
-			throw new IllegalArgumentException("'year' cannot be zero.");
-		}
-		DateTime startDate = new DateTime(year, month, day, hour, 0);
-		DateTime endDate = startDate.plusHours(1);
-		return metricRepository.find(eventId, MetricResolution.HOUR, startDate.toDate(), endDate.toDate());
-	}
-
-	@RequestMapping(value = "/metric/hourly/{eventId}/{year}/{month}/{day}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Iterable<AggregatedValue> listHourlyAggregations(@PathVariable("eventId") String eventId,
-			@PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("day") int day) {
-		if (year == 0) {
-			throw new IllegalArgumentException("'year' cannot be zero.");
-		}
-		DateTime startDate = new DateTime(year, month, day, 0, 0);
-		DateTime endDate = startDate.plusDays(1);
-		return metricRepository.find(eventId, MetricResolution.HOUR, startDate.toDate(), endDate.toDate());
-	}
-
-	@RequestMapping(value = "/metric/hourly/{eventId}/{year}/{month}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Iterable<AggregatedValue> listHourlyAggregations(@PathVariable("eventId") String eventId,
-			@PathVariable("year") int year, @PathVariable("month") int month) {
-		if (year == 0) {
-			throw new IllegalArgumentException("'year' cannot be zero.");
-		}
-		DateTime startDate = new DateTime(year, month, 1, 0, 0);
-		DateTime endDate = startDate.plusMonths(1);
-		return metricRepository.find(eventId, MetricResolution.HOUR, startDate.toDate(), endDate.toDate());
-	}
-
-	@RequestMapping(value = "/metric/daily/{eventId}/{year}/{month}/{day}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Iterable<AggregatedValue> listDailyAggregations(@PathVariable("eventId") String eventId,
-			@PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("day") int day) {
-		if (year == 0) {
-			throw new IllegalArgumentException("'year' cannot be zero.");
-		}
-		DateTime startDate = new DateTime(year, month, day, 0, 0);
-		DateTime endDate = startDate.plusDays(1);
-
-		return metricRepository.find(eventId, MetricResolution.DAY, startDate.toDate(), endDate.toDate());
-	}
-
-	@RequestMapping(value = "/metric/daily/{eventId}/{year}/{month}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Iterable<AggregatedValue> listDailyAggregations(@PathVariable("eventId") String eventId,
-			@PathVariable("year") int year, @PathVariable("month") int month) {
-		if (year == 0) {
-			throw new IllegalArgumentException("'year' cannot be zero.");
-		}
-		DateTime startDate = new DateTime(year, month, 1, 0, 0);
-		DateTime endDate = startDate.plusMonths(1);
-
-		return metricRepository.find(eventId, MetricResolution.DAY, startDate.toDate(), endDate.toDate());
-	}
-
-	@RequestMapping(value = "/metric/daily/{eventId}/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Iterable<AggregatedValue> listDailyAggregations(@PathVariable("eventId") String eventId,
-			@PathVariable("year") int year) {
-		if (year == 0) {
-			throw new IllegalArgumentException("'year' cannot be zero.");
-		}
-		DateTime startDate = new DateTime(year, 1, 1, 0, 0);
-		DateTime endDate = startDate.plusYears(1);
-
-		return metricRepository.find(eventId, MetricResolution.DAY, startDate.toDate(), endDate.toDate());
-	}
-
-	@RequestMapping(value = "/metric/monthly/{eventId}/{year}/{month}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Iterable<AggregatedValue> listMonthlyAggregations(@PathVariable("eventId") String eventId,
-			@PathVariable("year") int year, @PathVariable("month") int month) {
-		if (year == 0) {
-			throw new IllegalArgumentException("'year' cannot be zero.");
-		}
-		DateTime startDate = new DateTime(year, month, 1, 0, 0);
-		DateTime endDate = startDate.plusMonths(1);
-		return metricRepository.find(eventId, MetricResolution.MONTH, startDate.toDate(), endDate.toDate());
-	}
-
-	@RequestMapping(value = "/metric/monthly/{eventId}/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Iterable<AggregatedValue> listMonthlyAggregations(@PathVariable("eventId") String eventId,
-			@PathVariable("year") int year) {
-		if (year == 0) {
-			throw new IllegalArgumentException("'year' cannot be zero.");
-		}
-		DateTime startDate = new DateTime(year, 1, 1, 0, 0);
-		DateTime endDate = startDate.plusYears(1);
-		return metricRepository.find(eventId, MetricResolution.MONTH, startDate.toDate(), endDate.toDate());
+		return metricRepository.find(eventId, MINUTE, startDate.toDate(), endDate.toDate());
 	}
 
 	/**
-	 * Provides the gauge metric for the given year.
+	 * Provides the minute-wise gauge metric for the given hour.
+	 * 
+	 * @param eventId name of the event
+	 * @param year year in 4 digit format
+	 * @param month the month of the year, from 1 to 12
+	 * @param day the day of the month, from 1 to 31
+	 * @param hour the hour of the day, from 0 to 23
+	 * @return gauge metric aggregations for the given hour
+	 */
+	@RequestMapping(value = "/minute/{eventId}/{year}/{month}/{day}/{hour}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Iterable<HierarchialAggregationResult> listMinuteAggregations(@PathVariable("eventId") String eventId,
+			@PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("day") int day,
+			@PathVariable("hour") int hour) {
+		validateYear(year);
+		DateTime startDate = new DateTime(year, month, day, hour, 0);
+		DateTime endDate = startDate.plusHours(1);
+		return metricRepository.find(eventId, MINUTE, startDate.toDate(), endDate.toDate());
+	}
+
+	/**
+	 * Provides the minute-wise gauge metric for the given day.
+	 * 
+	 * @param eventId name of the event
+	 * @param year year in 4 digit format
+	 * @param month the month of the year, from 1 to 12
+	 * @param day the day of the month, from 1 to 31
+	 * @return gauge metric aggregations for the given day
+	 */
+	@RequestMapping(value = "/minute/{eventId}/{year}/{month}/{day}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Iterable<HierarchialAggregationResult> listMinuteAggregations(@PathVariable("eventId") String eventId,
+			@PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("day") int day) {
+		validateYear(year);
+		DateTime startDate = new DateTime(year, month, day, 0, 0);
+		DateTime endDate = startDate.plusDays(1);
+		return metricRepository.find(eventId, MINUTE, startDate.toDate(), endDate.toDate());
+	}
+
+	/**
+	 * Provides the minute wise gauge metric for the given month.
+	 * 
+	 * @param eventId name of the event
+	 * @param year year in 4 digit format
+	 * @param month the month of the year, from 1 to 12
+	 * @return gauge metric aggregations for the given month
+	 */
+	@RequestMapping(value = "/minute/{eventId}/{year}/{month}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Iterable<HierarchialAggregationResult> listMinuteAggregations(@PathVariable("eventId") String eventId,
+			@PathVariable("year") int year, @PathVariable("month") int month) {
+		validateYear(year);
+		DateTime startDate = new DateTime(year, month, 1, 0, 0);
+		DateTime endDate = startDate.plusMonths(1);
+		return metricRepository.find(eventId, MINUTE, startDate.toDate(), endDate.toDate());
+	}
+
+	/**
+	 * Provides the hourly gauge metric for the given hour.
+	 * 
+	 * @param eventId name of the event
+	 * @param year year in 4 digit format
+	 * @param month the month of the year, from 1 to 12
+	 * @param day the day of the month, from 1 to 31
+	 * @param hour the hour of the day, from 0 to 23
+	 * @return gauge metric aggregations for the given hour
+	 */
+	@RequestMapping(value = "/hourly/{eventId}/{year}/{month}/{day}/{hour}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Iterable<HierarchialAggregationResult> listHourlyAggregations(@PathVariable("eventId") String eventId,
+			@PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("day") int day,
+			@PathVariable("hour") int hour) {
+		validateYear(year);
+		DateTime startDate = new DateTime(year, month, day, hour, 0);
+		DateTime endDate = startDate.plusHours(1);
+		return metricRepository.find(eventId, HOUR, startDate.toDate(), endDate.toDate());
+	}
+
+	/**
+	 * Provides the hourly gauge metric for the given day.
+	 * 
+	 * @param eventId name of the event
+	 * @param year year in 4 digit format
+	 * @param month the month of the year, from 1 to 12
+	 * @param day the day of the month, from 1 to 31
+	 * @return gauge metric aggregations for the given day
+	 */
+	@RequestMapping(value = "/hourly/{eventId}/{year}/{month}/{day}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Iterable<HierarchialAggregationResult> listHourlyAggregations(@PathVariable("eventId") String eventId,
+			@PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("day") int day) {
+		validateYear(year);
+		DateTime startDate = new DateTime(year, month, day, 0, 0);
+		DateTime endDate = startDate.plusDays(1);
+		return metricRepository.find(eventId, HOUR, startDate.toDate(), endDate.toDate());
+	}
+
+	/**
+	 * Provides the hourly gauge metric for the given month.
+	 * 
+	 * @param eventId name of the event
+	 * @param year year in 4 digit format
+	 * @param month the month of the year, from 1 to 12
+	 * @return gauge metric aggregations for the given month
+	 */
+	@RequestMapping(value = "/hourly/{eventId}/{year}/{month}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Iterable<HierarchialAggregationResult> listHourlyAggregations(@PathVariable("eventId") String eventId,
+			@PathVariable("year") int year, @PathVariable("month") int month) {
+		validateYear(year);
+		DateTime startDate = new DateTime(year, month, 1, 0, 0);
+		DateTime endDate = startDate.plusMonths(1);
+		return metricRepository.find(eventId, HOUR, startDate.toDate(), endDate.toDate());
+	}
+
+	/**
+	 * Provides the daily gauge metric for the given day.
+	 * 
+	 * @param eventId name of the event
+	 * @param year year in 4 digit format
+	 * @param month the month of the year, from 1 to 12
+	 * @param day the day of the month, from 1 to 31
+	 * @return gauge metric aggregations for the given day
+	 */
+	@RequestMapping(value = "/daily/{eventId}/{year}/{month}/{day}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Iterable<HierarchialAggregationResult> listDailyAggregations(@PathVariable("eventId") String eventId,
+			@PathVariable("year") int year, @PathVariable("month") int month, @PathVariable("day") int day) {
+		validateYear(year);
+		DateTime startDate = new DateTime(year, month, day, 0, 0);
+		DateTime endDate = startDate.plusDays(1);
+
+		return metricRepository.find(eventId, DAY, startDate.toDate(), endDate.toDate());
+	}
+
+	/**
+	 * Provides the daily gauge metric for the given month.
+	 * 
+	 * @param eventId name of the event
+	 * @param year year in 4 digit format
+	 * @param month the month of the year, from 1 to 12
+	 * @return gauge metric aggregations for the given month
+	 */
+	@RequestMapping(value = "/daily/{eventId}/{year}/{month}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Iterable<HierarchialAggregationResult> listDailyAggregations(@PathVariable("eventId") String eventId,
+			@PathVariable("year") int year, @PathVariable("month") int month) {
+		validateYear(year);
+		DateTime startDate = new DateTime(year, month, 1, 0, 0);
+		DateTime endDate = startDate.plusMonths(1);
+
+		return metricRepository.find(eventId, DAY, startDate.toDate(), endDate.toDate());
+	}
+
+	/**
+	 * Provides the daily gauge metric for the given year.
 	 * 
 	 * @param eventId name of the event
 	 * @param year year in 4 digit format
 	 * @return gauge metric aggregations for the given year
 	 */
-	@RequestMapping(value = "/metric/yearly/{eventId}/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Iterable<AggregatedValue> listYearlyAggregations(@PathVariable("eventId") String eventId,
+	@RequestMapping(value = "/daily/{eventId}/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Iterable<HierarchialAggregationResult> listDailyAggregations(@PathVariable("eventId") String eventId,
 			@PathVariable("year") int year) {
+		validateYear(year);
+		DateTime startDate = new DateTime(year, 1, 1, 0, 0);
+		DateTime endDate = startDate.plusYears(1);
+
+		return metricRepository.find(eventId, DAY, startDate.toDate(), endDate.toDate());
+	}
+
+	/**
+	 * Provides the monthly gauge metric for the given month.
+	 * 
+	 * @param eventId name of the event
+	 * @param year year in 4 digit format
+	 * @param month the month of the year, from 1 to 12
+	 * @return gauge metric aggregations for the given month
+	 */
+	@RequestMapping(value = "/monthly/{eventId}/{year}/{month}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Iterable<HierarchialAggregationResult> listMonthlyAggregations(@PathVariable("eventId") String eventId,
+			@PathVariable("year") int year, @PathVariable("month") int month) {
+		validateYear(year);
+		DateTime startDate = new DateTime(year, month, 1, 0, 0);
+		DateTime endDate = startDate.plusMonths(1);
+		return metricRepository.find(eventId, MONTH, startDate.toDate(), endDate.toDate());
+	}
+
+	/**
+	 * Provides the monthly gauge metric for the given year.
+	 * 
+	 * @param eventId name of the event
+	 * @param year year in 4 digit format
+	 * @return gauge metric aggregations for the given year
+	 */
+	@RequestMapping(value = "/monthly/{eventId}/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Iterable<HierarchialAggregationResult> listMonthlyAggregations(@PathVariable("eventId") String eventId,
+			@PathVariable("year") int year) {
+		validateYear(year);
+		DateTime startDate = new DateTime(year, 1, 1, 0, 0);
+		DateTime endDate = startDate.plusYears(1);
+		return metricRepository.find(eventId, MONTH, startDate.toDate(), endDate.toDate());
+	}
+
+	/**
+	 * Provides the yearly aggregation
+	 * 
+	 * @param eventId name of the event
+	 * @param year year in 4 digit format
+	 * @return gauge metric aggregations for the given year
+	 */
+	@RequestMapping(value = "/yearly/{eventId}/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Iterable<HierarchialAggregationResult> listYearlyAggregations(@PathVariable("eventId") String eventId,
+			@PathVariable("year") int year) {
+		validateYear(year);
+		DateTime startDate = new DateTime(year, 1, 1, 0, 0);
+		DateTime endDate = startDate.plusYears(1);
+		return metricRepository.find(eventId, YEAR, startDate.toDate(), endDate.toDate());
+	}
+
+	private void validateYear(int year) {
 		if (year == 0) {
 			throw new IllegalArgumentException("'year' cannot be zero.");
 		}
-		DateTime startDate = new DateTime(year, 1, 1, 0, 0);
-		DateTime endDate = startDate.plusYears(1);
-		return metricRepository.find(eventId, MetricResolution.YEAR, startDate.toDate(), endDate.toDate());
 	}
+
 }

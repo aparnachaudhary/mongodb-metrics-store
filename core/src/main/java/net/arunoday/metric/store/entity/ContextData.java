@@ -5,10 +5,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Context information for KPI.
+ * Context information for events.
  * 
- * @author Aparna
- * 
+ * @author Aparna Chaudhary
  */
 public class ContextData extends LinkedHashMap<String, Object> {
 
@@ -82,6 +81,7 @@ public class ContextData extends LinkedHashMap<String, Object> {
 		return super.get(key);
 	}
 
+	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void putAll(Map m) {
 		for (Map.Entry entry : (Set<Map.Entry>) m.entrySet()) {

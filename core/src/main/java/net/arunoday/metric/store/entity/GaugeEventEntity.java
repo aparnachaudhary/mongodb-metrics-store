@@ -1,13 +1,10 @@
-/**
- * 
- */
 package net.arunoday.metric.store.entity;
 
 import java.util.Date;
 
 /**
- * Gauge Event Entity. Represents gauge event type which returns a single value. The metadata associated can be stored
- * along with this event.
+ * Represents gauge event type which returns a single value. The metadata associated can be stored along with this
+ * event.
  * 
  * @author Aparna Chaudhary
  */
@@ -117,8 +114,8 @@ public class GaugeEventEntity {
 
 	@Override
 	public String toString() {
-		return "GaugeEventEntity [id=" + id + ", occuredOn=" + occuredOn + ", eventType=" + eventType + ", value="
-				+ value + ", contextData=" + contextData + "]";
+		return "GaugeEventEntity [id=" + id + ", occuredOn=" + occuredOn + ", eventType=" + eventType + ", value=" + value
+				+ ", contextData=" + contextData + "]";
 	}
 
 }

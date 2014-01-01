@@ -3,7 +3,7 @@ package net.arunoday.metric.store.repository;
 import java.io.Serializable;
 import java.util.Date;
 
-import net.arunoday.metric.store.entity.AggregatedValue;
+import net.arunoday.metric.store.entity.HierarchialAggregationResult;
 import net.arunoday.metric.store.entity.MetricResolution;
 
 /**
@@ -17,7 +17,7 @@ public interface GaugeMetricRepository<ID extends Serializable> {
 	static final String EVENT_COLLECTION = "_gauge_events";
 
 	/**
-	 * Returns all instances of the {@link AggregatedValue} by event type matching the filter criteria for the given time
+	 * Returns all instances of the {@link HierarchialAggregationResult} by event type matching the filter criteria for the given time
 	 * range.
 	 * 
 	 * @param eventType event name must not be {@literal null}.
@@ -26,7 +26,7 @@ public interface GaugeMetricRepository<ID extends Serializable> {
 	 * @param endTime end date for metric filtering; date is exclusive; ignored if null.
 	 * @return matching metric entities
 	 */
-	Iterable<AggregatedValue> find(String eventType, MetricResolution resolution, Date startTime, Date endTime);
+	Iterable<HierarchialAggregationResult> find(String eventType, MetricResolution resolution, Date startTime, Date endTime);
 
 	/**
 	 * Performs minute-wise aggregation for the given event type.
@@ -55,4 +55,21 @@ public interface GaugeMetricRepository<ID extends Serializable> {
 	 */
 	void aggregatePerDay(String eventName, Date startDate, Date endDate);
 
+	/**
+	 * Performs monthly aggregation for the given event type.
+	 * 
+	 * @param eventName name of the event for which aggregation is required
+	 * @param startDate start date for event filtering; date is inclusive; ignored if null.
+	 * @param endDate end date for event filtering; date is exclusive; ignored if null.
+	 */
+	void aggregatePerMonth(String eventName, Date startDate, Date endDate);
+
+	/**
+	 * Performs yearly aggregation for the given event type.
+	 * 
+	 * @param eventName name of the event for which aggregation is required
+	 * @param startDate start date for event filtering; date is inclusive; ignored if null.
+	 * @param endDate end date for event filtering; date is exclusive; ignored if null.
+	 */
+	void aggregatePerYear(String eventName, Date startDate, Date endDate);
 }

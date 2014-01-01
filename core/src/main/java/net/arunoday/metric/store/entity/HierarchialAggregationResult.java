@@ -3,12 +3,11 @@ package net.arunoday.metric.store.entity;
 import java.util.Map;
 
 /**
- * Result of aggregation.
+ * Result of hierarchial aggregation.
  * 
- * @author Aparna
- * 
+ * @author Aparna Chaudhary
  */
-public class AggregatedValue {
+public class HierarchialAggregationResult {
 
 	private String id;
 	private Map<String, Object> value;
@@ -27,7 +26,7 @@ public class AggregatedValue {
 
 	@Override
 	public String toString() {
-		return "ValueObject [id=" + id + ", value=" + value + "]";
+		return "Result [id=" + id + ", value=" + value + "]";
 	}
 
 }

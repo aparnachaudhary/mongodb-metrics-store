@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.arunoday.metric.store.repository;
 
 import static org.junit.Assert.assertEquals;
@@ -12,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.arunoday.metric.store.entity.AggregationResult;
 import net.arunoday.metric.store.entity.ContextData;
 import net.arunoday.metric.store.entity.GaugeEventEntity;
 
@@ -42,6 +38,7 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 
 	@Test
 	public void testSave() {
+
 		GaugeEventEntity event = new GaugeEventEntity(new Date(), EVENT_TYPE_HOMEREQUEST, RandomUtils.nextDouble());
 
 		ContextData data = new ContextData();
@@ -54,6 +51,7 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 
 	@Test
 	public void testSaveWithNestedContextData() {
+
 		GaugeEventEntity event = new GaugeEventEntity(new Date(), EVENT_TYPE_HOMEREQUEST, RandomUtils.nextDouble());
 
 		ContextData data = new ContextData();
@@ -74,6 +72,7 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 
 	@Test
 	public void testFindOne() {
+
 		GaugeEventEntity event = new GaugeEventEntity(new Date(), EVENT_TYPE_HOMEREQUEST, RandomUtils.nextDouble());
 
 		ContextData data = new ContextData();
@@ -116,38 +115,6 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 		repository.save(event2);
 
 		assertEquals("Unexpected event types", Arrays.asList("request1", "request2"), repository.findEventTypes());
-	}
-
-	@Test
-	public void testAggregateOperations() {
-		DateTime startDate = new DateTime("2013-08-10T16:00:00.389Z");
-		for (int i = 1; i < 25; i++) {
-			GaugeEventEntity event = new GaugeEventEntity(startDate.plusSeconds(i).toDate(), EVENT_TYPE_HOMEREQUEST, i);
-			ContextData data = new ContextData();
-			data.put("request", "somerequest");
-			data.put("index", i);
-			event.setContextData(data);
-			event = repository.save(event);
-		}
-
-		AggregationResult aggregationResult = repository.performAggregation(EVENT_TYPE_HOMEREQUEST, startDate.toDate(),
-				startDate.plusSeconds(25).toDate());
-		assertEquals("Unexpected Min value", 1, aggregationResult.getMin(), 0.00);
-
-		assertEquals("Unexpected Max value", 24, aggregationResult.getMax(), 0.00);
-
-		assertEquals("Unexpected Avg value", 12.5, aggregationResult.getAvg(), 0.00);
-
-		assertEquals("Unexpected Sum value", 300, aggregationResult.getSum(), 0.00);
-
-		assertEquals("Unexpected Sum value", 300,
-				repository.performAggregation(EVENT_TYPE_HOMEREQUEST, startDate.toDate(), null).getSum(), 0.00);
-
-		assertEquals("Unexpected Sum value", 300,
-				repository.performAggregation(EVENT_TYPE_HOMEREQUEST, null, startDate.plusSeconds(25).toDate()).getSum(), 0.00);
-
-		assertEquals("Unexpected Sum value", 300, repository.performAggregation(EVENT_TYPE_HOMEREQUEST, null, null)
-				.getSum(), 0.00);
 	}
 
 	private void storeEvents(int count, DateTime startDate, String requestType) {

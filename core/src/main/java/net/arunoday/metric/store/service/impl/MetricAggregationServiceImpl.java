@@ -25,27 +25,49 @@ public class MetricAggregationServiceImpl implements MetricAggregationService {
 	@Override
 	@Scheduled(cron = "0 0-59 * * * *")
 	public void performAggregationPerMinute() {
-		DateTime startDate = new DateTime();
+		DateTime now = new DateTime();
 		for (String eventType : gaugeEventRepository.findEventTypes()) {
-			gaugeMetricRepository.aggregatePerMinute(eventType, startDate.minusSeconds(60).toDate(), startDate.toDate());
+			gaugeMetricRepository.aggregatePerMinute(eventType, now.minusSeconds(60).toDate(), now.toDate());
 		}
 	}
 
 	@Override
 	@Scheduled(cron = "0 0 * * * *")
 	public void performAggregationPerHour() {
-		DateTime startDate = new DateTime();
+		DateTime now = new DateTime();
 		for (String eventType : gaugeEventRepository.findEventTypes()) {
-			gaugeMetricRepository.aggregatePerHour(eventType, startDate.minusMinutes(60).toDate(), startDate.toDate());
+			gaugeMetricRepository.aggregatePerHour(eventType, now.minusMinutes(60).toDate(), now.toDate());
 		}
 	}
 
 	@Override
 	@Scheduled(cron = "0 0 0 * * *")
 	public void performAggregationPerDay() {
-		DateTime startDate = new DateTime();
+		DateTime now = new DateTime();
 		for (String eventType : gaugeEventRepository.findEventTypes()) {
-			gaugeMetricRepository.aggregatePerHour(eventType, startDate.minusHours(24).toDate(), startDate.toDate());
+			gaugeMetricRepository.aggregatePerDay(eventType, now.minusHours(24).toDate(), now.toDate());
+		}
+	}
+
+	@Override
+	@Scheduled(cron = "0 0 0 * * *")
+	public void performAggregationPerMonth() {
+		DateTime now = new DateTime();
+		// start of month
+		DateTime startDate = new DateTime(now.getYear(), now.getMonthOfYear(), 1, 0, 0);
+		for (String eventType : gaugeEventRepository.findEventTypes()) {
+			gaugeMetricRepository.aggregatePerMonth(eventType, startDate.toDate(), now.toDate());
+		}
+	}
+
+	@Override
+	@Scheduled(cron = "0 0 0 * * *")
+	public void performAggregationPerYear() {
+		DateTime now = new DateTime();
+		// start of year
+		DateTime startDate = new DateTime(now.getYear(), 1, 1, 0, 0);
+		for (String eventType : gaugeEventRepository.findEventTypes()) {
+			gaugeMetricRepository.aggregatePerYear(eventType, startDate.toDate(), now.toDate());
 		}
 	}
 }
