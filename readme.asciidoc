@@ -30,7 +30,7 @@ JSON Structure Gauge Event:
 ----
 {
     "_id" : ObjectId("52bede0cc2e6f68c4ad8b7a6"),
-    "_class" : "net.arunoday.metric.store.entity.GaugeEventEntity",
+    "_class" : "net.arunoday.metric.store.model.GaugeEvent",
     "occuredOn" : ISODate("2013-12-28T14:19:56Z"),
     "eventType" : "request",
     "value" : 1,
@@ -79,6 +79,20 @@ JSON Structure Gauge Metric:
 
 Following REST operations are supported.
 
+.Table Gauge Event REST Resources
+[cols="2*", options="header"]
+|===
+|Resource| Description
+
+|PUT /event/
+|Stores gauge events and returns the event identifier.
+
+|DELETE /event/+eventName+
+|Deletes all events for the given event name.
+
+|===
+
+
 .Table Gauge Metric REST Resources
 [cols="2*", options="header"]
 |===
@@ -124,7 +138,6 @@ Following REST operations are supported.
 |Returns a single yearly metric aggregation for the given year.
 
 |===
-
 
 === Licensing and Copyright: ===
 
