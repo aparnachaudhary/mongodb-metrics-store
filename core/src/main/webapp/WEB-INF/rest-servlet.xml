@@ -8,7 +8,7 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<context:component-scan base-package="net.arunoday" />
-	
+
 	<!-- Detects MVC annotations like @RequestMapping -->
-	<mvc:annotation-driven />
+	 <mvc:annotation-driven /> 
 </beans>

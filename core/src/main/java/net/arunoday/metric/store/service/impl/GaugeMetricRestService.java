@@ -1,11 +1,11 @@
 package net.arunoday.metric.store.service.impl;
 
-import static net.arunoday.metric.store.entity.MetricResolution.DAY;
-import static net.arunoday.metric.store.entity.MetricResolution.HOUR;
-import static net.arunoday.metric.store.entity.MetricResolution.MINUTE;
-import static net.arunoday.metric.store.entity.MetricResolution.MONTH;
-import static net.arunoday.metric.store.entity.MetricResolution.YEAR;
-import net.arunoday.metric.store.entity.HierarchialAggregationResult;
+import static net.arunoday.metric.store.model.MetricResolution.DAY;
+import static net.arunoday.metric.store.model.MetricResolution.HOUR;
+import static net.arunoday.metric.store.model.MetricResolution.MINUTE;
+import static net.arunoday.metric.store.model.MetricResolution.MONTH;
+import static net.arunoday.metric.store.model.MetricResolution.YEAR;
+import net.arunoday.metric.store.model.HierarchialAggregationResult;
 import net.arunoday.metric.store.repository.GaugeMetricRepository;
 
 import org.joda.time.DateTime;

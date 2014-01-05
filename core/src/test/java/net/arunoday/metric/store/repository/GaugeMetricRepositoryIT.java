@@ -1,16 +1,16 @@
 package net.arunoday.metric.store.repository;
 
-import static net.arunoday.metric.store.entity.MetricResolution.DAY;
-import static net.arunoday.metric.store.entity.MetricResolution.HOUR;
-import static net.arunoday.metric.store.entity.MetricResolution.MINUTE;
-import static net.arunoday.metric.store.entity.MetricResolution.MONTH;
-import static net.arunoday.metric.store.entity.MetricResolution.YEAR;
+import static net.arunoday.metric.store.model.MetricResolution.DAY;
+import static net.arunoday.metric.store.model.MetricResolution.HOUR;
+import static net.arunoday.metric.store.model.MetricResolution.MINUTE;
+import static net.arunoday.metric.store.model.MetricResolution.MONTH;
+import static net.arunoday.metric.store.model.MetricResolution.YEAR;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import net.arunoday.metric.store.entity.GaugeEventEntity;
-import net.arunoday.metric.store.entity.HierarchialAggregationResult;
+import net.arunoday.metric.store.model.GaugeEvent;
+import net.arunoday.metric.store.model.HierarchialAggregationResult;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.joda.time.DateTime;
@@ -180,7 +180,7 @@ public class GaugeMetricRepositoryIT extends AbstractRepositoryIT {
 
 	private void storeEvents(int count, DateTime startDate, String requestType) {
 		for (int i = 0; i < count; i++) {
-			GaugeEventEntity event = new GaugeEventEntity(startDate.plusSeconds(i).toDate(), requestType,
+			GaugeEvent event = new GaugeEvent(startDate.plusSeconds(i).toDate(), requestType,
 					RandomUtils.nextDouble());
 			event = eventRepository.save(event);
 		}

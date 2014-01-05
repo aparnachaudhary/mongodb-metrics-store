@@ -1,4 +1,4 @@
-package net.arunoday.metric.store.entity;
+package net.arunoday.metric.store.model;
 
 /**
  * DTO to represent aggregation results.

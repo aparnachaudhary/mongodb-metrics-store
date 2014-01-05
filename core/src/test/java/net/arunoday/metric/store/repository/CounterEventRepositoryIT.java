@@ -3,13 +3,13 @@
  */
 package net.arunoday.metric.store.repository;
 
-import static net.arunoday.metric.store.entity.MetricOperation.MAX;
-import static net.arunoday.metric.store.entity.MetricOperation.MIN;
+import static net.arunoday.metric.store.model.MetricOperation.MAX;
+import static net.arunoday.metric.store.model.MetricOperation.MIN;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
-import net.arunoday.metric.store.entity.CounterEventEntity;
+import net.arunoday.metric.store.model.CounterEventEntity;
 
 import org.joda.time.DateTime;
 import org.junit.Before;

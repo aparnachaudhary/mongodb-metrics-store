@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.arunoday.metric.store.entity.ContextData;
-import net.arunoday.metric.store.entity.GaugeEventEntity;
+import net.arunoday.metric.store.model.ContextData;
+import net.arunoday.metric.store.model.GaugeEvent;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.joda.time.DateTime;
@@ -39,7 +39,7 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 	@Test
 	public void testSave() {
 
-		GaugeEventEntity event = new GaugeEventEntity(new Date(), EVENT_TYPE_HOMEREQUEST, RandomUtils.nextDouble());
+		GaugeEvent event = new GaugeEvent(new Date(), EVENT_TYPE_HOMEREQUEST, RandomUtils.nextDouble());
 
 		ContextData data = new ContextData();
 		data.put("request", "localhost");
@@ -52,7 +52,7 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 	@Test
 	public void testSaveWithNestedContextData() {
 
-		GaugeEventEntity event = new GaugeEventEntity(new Date(), EVENT_TYPE_HOMEREQUEST, RandomUtils.nextDouble());
+		GaugeEvent event = new GaugeEvent(new Date(), EVENT_TYPE_HOMEREQUEST, RandomUtils.nextDouble());
 
 		ContextData data = new ContextData();
 		data.put("request", "localhost");
@@ -66,14 +66,14 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 
 		assertEquals("Expected one event to be stored", 1, repository.count(event.getEventType()));
 
-		GaugeEventEntity retrievedEvent = repository.findOne(event.getId(), event.getEventType());
+		GaugeEvent retrievedEvent = repository.findOne(event.getId(), event.getEventType());
 		assertEquals("", retrievedEvent.getContextData(), event.getContextData());
 	}
 
 	@Test
 	public void testFindOne() {
 
-		GaugeEventEntity event = new GaugeEventEntity(new Date(), EVENT_TYPE_HOMEREQUEST, RandomUtils.nextDouble());
+		GaugeEvent event = new GaugeEvent(new Date(), EVENT_TYPE_HOMEREQUEST, RandomUtils.nextDouble());
 
 		ContextData data = new ContextData();
 		data.put("request", "localhost");
@@ -92,14 +92,14 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 		storeEvents(25, startDate, "localhost");
 		storeEvents(20, startDate, "someremotemachine");
 
-		List<GaugeEventEntity> results = (List<GaugeEventEntity>) repository.find(EVENT_TYPE_HOMEREQUEST,
+		List<GaugeEvent> results = (List<GaugeEvent>) repository.find(EVENT_TYPE_HOMEREQUEST,
 				Criteria.where("contextData.request").is("localhost"), startDate.toDate(), startDate.plusSeconds(10).toDate(),
 				3);
 		assertEquals(startDate.toDate(), results.get(0).getOccuredOn());
 		assertEquals("", 3, results.size());
 
-		results = (List<GaugeEventEntity>) repository.find(EVENT_TYPE_HOMEREQUEST, Criteria.where("contextData.index")
-				.is(2), startDate.toDate(), startDate.plusSeconds(10).toDate(), 3);
+		results = (List<GaugeEvent>) repository.find(EVENT_TYPE_HOMEREQUEST, Criteria.where("contextData.index").is(2),
+				startDate.toDate(), startDate.plusSeconds(10).toDate(), 3);
 		assertEquals(startDate.plusSeconds(2).toDate(), results.get(0).getOccuredOn());
 		assertEquals("", 2, results.size());
 
@@ -108,8 +108,8 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 	@Test
 	public void testFindEventTypes() {
 
-		GaugeEventEntity event1 = new GaugeEventEntity(new Date(), "request1", RandomUtils.nextDouble());
-		GaugeEventEntity event2 = new GaugeEventEntity(new Date(), "request2", RandomUtils.nextDouble());
+		GaugeEvent event1 = new GaugeEvent(new Date(), "request1", RandomUtils.nextDouble());
+		GaugeEvent event2 = new GaugeEvent(new Date(), "request2", RandomUtils.nextDouble());
 
 		repository.save(event1);
 		repository.save(event2);
@@ -117,9 +117,21 @@ public class GaugeEventRepositoryIT extends AbstractRepositoryIT {
 		assertEquals("Unexpected event types", Arrays.asList("request1", "request2"), repository.findEventTypes());
 	}
 
+	@Test
+	public void testDeleteAll() {
+
+		String eventType = "request1";
+		repository.save(new GaugeEvent(new DateTime().toDate(), eventType, RandomUtils.nextDouble()));
+		repository.save(new GaugeEvent(new DateTime().toDate(), eventType, RandomUtils.nextDouble()));
+		assertEquals(2, repository.count(eventType));
+
+		repository.deleteAll(eventType);
+		assertEquals(0, repository.count(eventType));
+	}
+
 	private void storeEvents(int count, DateTime startDate, String requestType) {
 		for (int i = 0; i < count; i++) {
-			GaugeEventEntity event = new GaugeEventEntity(startDate.plusSeconds(i).toDate(), EVENT_TYPE_HOMEREQUEST,
+			GaugeEvent event = new GaugeEvent(startDate.plusSeconds(i).toDate(), EVENT_TYPE_HOMEREQUEST,
 					RandomUtils.nextDouble());
 
 			ContextData data = new ContextData();

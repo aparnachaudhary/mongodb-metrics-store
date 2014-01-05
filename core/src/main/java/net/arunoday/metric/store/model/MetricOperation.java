@@ -1,4 +1,4 @@
-package net.arunoday.metric.store.entity;
+package net.arunoday.metric.store.model;
 
 /**
  * Default supported aggregation operations.

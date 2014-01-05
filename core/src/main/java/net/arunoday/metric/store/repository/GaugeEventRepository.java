@@ -7,12 +7,12 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
-import net.arunoday.metric.store.entity.GaugeEventEntity;
+import net.arunoday.metric.store.model.GaugeEvent;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 
 /**
- * MongoDB Repository for {@link GaugeEventEntity}
+ * MongoDB Repository for {@link GaugeEvent}
  * 
  * @author Aparna Chaudhary
  */
@@ -27,7 +27,7 @@ public interface GaugeEventRepository<ID extends Serializable> {
 	 * @param entity gauge event entity
 	 * @return the saved entity
 	 */
-	GaugeEventEntity save(GaugeEventEntity entity);
+	GaugeEvent save(GaugeEvent entity);
 
 	/**
 	 * Retrieves an entity by its id and event name.
@@ -37,10 +37,10 @@ public interface GaugeEventRepository<ID extends Serializable> {
 	 * @return the entity with the given id or {@literal null} if none found
 	 * @throws IllegalArgumentException if {@code id} is {@literal null}
 	 */
-	GaugeEventEntity findOne(ID id, String eventType);
+	GaugeEvent findOne(ID id, String eventType);
 
 	/**
-	 * Returns all instances of the {@link GaugeEventEntity} by event type matching the filter criteria for the given time
+	 * Returns all instances of the {@link GaugeEvent} by event type matching the filter criteria for the given time
 	 * range.
 	 * 
 	 * @param eventType event name must not be {@literal null}.
@@ -50,15 +50,15 @@ public interface GaugeEventRepository<ID extends Serializable> {
 	 * @param limit the maximum number of events to return; defaults to ten thousand
 	 * @return matching event entities
 	 */
-	Iterable<GaugeEventEntity> find(String eventType, Criteria criteria, Date startTime, Date endTime, int limit);
+	Iterable<GaugeEvent> find(String eventType, Criteria criteria, Date startTime, Date endTime, int limit);
 
 	/**
-	 * Returns all instances of the {@link GaugeEventEntity} by event type.
+	 * Returns all instances of the {@link GaugeEvent} by event type.
 	 * 
 	 * @param eventType event name
 	 * @return all entities
 	 */
-	Iterable<GaugeEventEntity> findAll(String eventType);
+	Iterable<GaugeEvent> findAll(String eventType);
 
 	/**
 	 * Returns stored event types

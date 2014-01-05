@@ -1,18 +1,18 @@
 package net.arunoday.metric.store.repository.impl;
 
-import static net.arunoday.metric.store.entity.GaugeEventEntity.EVENT_TYPE_FIELD;
-import static net.arunoday.metric.store.entity.GaugeEventEntity.OCCURED_ON_FIELD;
-import static net.arunoday.metric.store.entity.MetricResolution.DAY;
-import static net.arunoday.metric.store.entity.MetricResolution.HOUR;
-import static net.arunoday.metric.store.entity.MetricResolution.MINUTE;
-import static net.arunoday.metric.store.entity.MetricResolution.MONTH;
-import static net.arunoday.metric.store.entity.MetricResolution.YEAR;
+import static net.arunoday.metric.store.model.GaugeEvent.EVENT_TYPE_FIELD;
+import static net.arunoday.metric.store.model.GaugeEvent.OCCURED_ON_FIELD;
+import static net.arunoday.metric.store.model.MetricResolution.DAY;
+import static net.arunoday.metric.store.model.MetricResolution.HOUR;
+import static net.arunoday.metric.store.model.MetricResolution.MINUTE;
+import static net.arunoday.metric.store.model.MetricResolution.MONTH;
+import static net.arunoday.metric.store.model.MetricResolution.YEAR;
 
 import java.util.Date;
 import java.util.List;
 
-import net.arunoday.metric.store.entity.HierarchialAggregationResult;
-import net.arunoday.metric.store.entity.MetricResolution;
+import net.arunoday.metric.store.model.HierarchialAggregationResult;
+import net.arunoday.metric.store.model.MetricResolution;
 import net.arunoday.metric.store.repository.GaugeMetricRepository;
 
 import org.slf4j.Logger;

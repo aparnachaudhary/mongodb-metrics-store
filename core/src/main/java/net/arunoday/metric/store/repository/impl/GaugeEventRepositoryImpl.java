@@ -1,13 +1,13 @@
 package net.arunoday.metric.store.repository.impl;
 
-import static net.arunoday.metric.store.entity.GaugeEventEntity.OCCURED_ON_FIELD;
+import static net.arunoday.metric.store.model.GaugeEvent.OCCURED_ON_FIELD;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import net.arunoday.metric.store.entity.GaugeEventEntity;
+import net.arunoday.metric.store.model.GaugeEvent;
 import net.arunoday.metric.store.repository.GaugeEventRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,27 +32,27 @@ public class GaugeEventRepositoryImpl implements GaugeEventRepository<String> {
 	private MongoTemplate mongoTemplate;
 
 	@Override
-	public GaugeEventEntity save(GaugeEventEntity entity) {
+	public GaugeEvent save(GaugeEvent entity) {
 		mongoTemplate.save(entity, getCollectionName(entity.getEventType()));
 		return entity;
 	}
 
 	@Override
-	public GaugeEventEntity findOne(String id, String eventType) {
-		return mongoTemplate.findById(id, GaugeEventEntity.class, getCollectionName(eventType));
+	public GaugeEvent findOne(String id, String eventType) {
+		return mongoTemplate.findById(id, GaugeEvent.class, getCollectionName(eventType));
 	}
 
 	@Override
-	public Iterable<GaugeEventEntity> findAll(String eventType) {
-		return mongoTemplate.find(new Query(), GaugeEventEntity.class, getCollectionName(eventType));
+	public Iterable<GaugeEvent> findAll(String eventType) {
+		return mongoTemplate.find(new Query(), GaugeEvent.class, getCollectionName(eventType));
 	}
 
 	@Override
-	public Iterable<GaugeEventEntity> find(String eventType, Criteria criteria, Date startTime, Date endTime, int limit) {
+	public Iterable<GaugeEvent> find(String eventType, Criteria criteria, Date startTime, Date endTime, int limit) {
 		Query query = new Query(criteria);
 		query.addCriteria(new Criteria(OCCURED_ON_FIELD).gte(startTime).lt(endTime));
 		query.limit(limit);
-		return mongoTemplate.find(query, GaugeEventEntity.class, getCollectionName(eventType));
+		return mongoTemplate.find(query, GaugeEvent.class, getCollectionName(eventType));
 	}
 
 	@Override

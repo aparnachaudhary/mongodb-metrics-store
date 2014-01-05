@@ -3,8 +3,8 @@ package net.arunoday.metric.store.repository;
 import java.io.Serializable;
 import java.util.Date;
 
-import net.arunoday.metric.store.entity.CounterEventEntity;
-import net.arunoday.metric.store.entity.MetricOperation;
+import net.arunoday.metric.store.model.CounterEventEntity;
+import net.arunoday.metric.store.model.MetricOperation;
 
 /**
  * Defines custom repository operations for {@link CounterEventEntity}

@@ -1,14 +1,14 @@
 package net.arunoday.metric.store.repository.impl;
 
-import static net.arunoday.metric.store.entity.CounterEventEntity.EVENT_TYPE_FIELD;
-import static net.arunoday.metric.store.entity.CounterEventEntity.OCCURED_ON_FIELD;
-import static net.arunoday.metric.store.entity.CounterEventEntity.TOTAL_COUNT_FIELD;
+import static net.arunoday.metric.store.model.CounterEventEntity.EVENT_TYPE_FIELD;
+import static net.arunoday.metric.store.model.CounterEventEntity.OCCURED_ON_FIELD;
+import static net.arunoday.metric.store.model.CounterEventEntity.TOTAL_COUNT_FIELD;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import java.util.Date;
 
-import net.arunoday.metric.store.entity.CounterEventEntity;
-import net.arunoday.metric.store.entity.MetricOperation;
+import net.arunoday.metric.store.model.CounterEventEntity;
+import net.arunoday.metric.store.model.MetricOperation;
 import net.arunoday.metric.store.repository.CounterEventRepository;
 
 import org.slf4j.Logger;

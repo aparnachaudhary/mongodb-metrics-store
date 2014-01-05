@@ -1,5 +1,6 @@
-package net.arunoday.metric.store.entity;
+package net.arunoday.metric.store.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -8,8 +9,12 @@ import java.util.Date;
  * 
  * @author Aparna Chaudhary
  */
-public class GaugeEventEntity {
+public class GaugeEvent implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4002170465450342561L;
 	public static final String EVENT_TYPE_FIELD = "eventType";
 	public static final String OCCURED_ON_FIELD = "occuredOn";
 	public static final String VALUE_FIELD = "value";
@@ -28,7 +33,7 @@ public class GaugeEventEntity {
 	/**
 	 * Default constructor
 	 */
-	public GaugeEventEntity() {
+	public GaugeEvent() {
 		super();
 	}
 
@@ -39,7 +44,7 @@ public class GaugeEventEntity {
 	 * @param eventType type of event
 	 * @param value value for this event
 	 */
-	public GaugeEventEntity(Date occuredOn, String eventType, double value) {
+	public GaugeEvent(Date occuredOn, String eventType, double value) {
 		this(occuredOn, eventType, value, null);
 	}
 
@@ -51,7 +56,7 @@ public class GaugeEventEntity {
 	 * @param value value for this event
 	 * @param contextData metadata associated with this event
 	 */
-	public GaugeEventEntity(Date occuredOn, String eventType, double value, ContextData contextData) {
+	public GaugeEvent(Date occuredOn, String eventType, double value, ContextData contextData) {
 		super();
 		this.occuredOn = occuredOn;
 		this.eventType = eventType;
@@ -103,7 +108,7 @@ public class GaugeEventEntity {
 		if (obj == null || !getClass().equals(obj.getClass())) {
 			return false;
 		}
-		GaugeEventEntity that = (GaugeEventEntity) obj;
+		GaugeEvent that = (GaugeEvent) obj;
 		return this.getId().equals(that.getId());
 	}
 

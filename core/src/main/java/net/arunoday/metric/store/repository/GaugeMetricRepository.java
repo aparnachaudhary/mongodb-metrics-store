@@ -3,8 +3,8 @@ package net.arunoday.metric.store.repository;
 import java.io.Serializable;
 import java.util.Date;
 
-import net.arunoday.metric.store.entity.HierarchialAggregationResult;
-import net.arunoday.metric.store.entity.MetricResolution;
+import net.arunoday.metric.store.model.HierarchialAggregationResult;
+import net.arunoday.metric.store.model.MetricResolution;
 
 /**
  * Repository interface for Gauge Metrics
