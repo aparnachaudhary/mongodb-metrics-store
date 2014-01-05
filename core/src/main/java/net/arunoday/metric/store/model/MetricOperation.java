@@ -4,7 +4,6 @@ package net.arunoday.metric.store.model;
  * Default supported aggregation operations.
  * 
  * @author Aparna Chaudhary
- * 
  */
 public enum MetricOperation {
 

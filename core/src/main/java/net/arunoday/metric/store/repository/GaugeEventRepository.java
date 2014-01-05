@@ -18,7 +18,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
  */
 public interface GaugeEventRepository<ID extends Serializable> {
 
-	static final String EVENT_COLLECTION = "_gauge_events";
+	static final String EVENT_COLLECTION = ".event";
 
 	/**
 	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the

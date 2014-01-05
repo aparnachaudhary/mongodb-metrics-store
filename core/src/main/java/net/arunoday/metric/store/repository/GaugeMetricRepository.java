@@ -13,9 +13,6 @@ import net.arunoday.metric.store.model.MetricResolution;
  */
 public interface GaugeMetricRepository<ID extends Serializable> {
 
-	static final String METRICS_COLLECTION = "_gauge_metrics";
-	static final String EVENT_COLLECTION = "_gauge_events";
-
 	/**
 	 * Returns all instances of the {@link HierarchialAggregationResult} by event type matching the filter criteria for the given time
 	 * range.

@@ -13,6 +13,7 @@ import java.util.List;
 
 import net.arunoday.metric.store.model.HierarchialAggregationResult;
 import net.arunoday.metric.store.model.MetricResolution;
+import net.arunoday.metric.store.repository.GaugeEventRepository;
 import net.arunoday.metric.store.repository.GaugeMetricRepository;
 
 import org.slf4j.Logger;
@@ -162,7 +163,7 @@ public class GaugeMetricRepositoryImpl implements GaugeMetricRepository<String> 
 
 	private String getEventCollectionName(String eventName) {
 		Assert.notNull(eventName, "eventName must not be null!");
-		return eventName.concat(EVENT_COLLECTION);
+		return eventName.concat(GaugeEventRepository.EVENT_COLLECTION);
 	}
 
 }

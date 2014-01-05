@@ -3,8 +3,7 @@ package net.arunoday.metric.store.model;
 /**
  * Resolution for Metric data
  * 
- * @author Aparna
- * 
+ * @author Aparna Chaudhary
  */
 public enum MetricResolution {
 

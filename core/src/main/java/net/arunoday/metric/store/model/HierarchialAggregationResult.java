@@ -10,10 +10,8 @@ import java.util.Map;
  */
 public class HierarchialAggregationResult implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2870566248683883792L;
+
 	private String id;
 	private Map<String, Object> value;
 
