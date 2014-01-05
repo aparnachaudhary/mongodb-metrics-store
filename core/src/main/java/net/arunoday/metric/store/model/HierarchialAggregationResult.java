@@ -1,5 +1,6 @@
 package net.arunoday.metric.store.model;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -7,13 +8,21 @@ import java.util.Map;
  * 
  * @author Aparna Chaudhary
  */
-public class HierarchialAggregationResult {
+public class HierarchialAggregationResult implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2870566248683883792L;
 	private String id;
 	private Map<String, Object> value;
 
 	public String getId() {
 		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public Map<String, Object> getValue() {

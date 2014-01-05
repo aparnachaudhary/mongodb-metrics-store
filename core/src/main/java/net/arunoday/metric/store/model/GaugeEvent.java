@@ -68,6 +68,10 @@ public class GaugeEvent implements Serializable {
 		return id;
 	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public Date getOccuredOn() {
 		return occuredOn;
 	}
@@ -119,7 +123,7 @@ public class GaugeEvent implements Serializable {
 
 	@Override
 	public String toString() {
-		return "GaugeEventEntity [id=" + id + ", occuredOn=" + occuredOn + ", eventType=" + eventType + ", value=" + value
+		return "GaugeEvent [id=" + id + ", occuredOn=" + occuredOn + ", eventType=" + eventType + ", value=" + value
 				+ ", contextData=" + contextData + "]";
 	}
 
