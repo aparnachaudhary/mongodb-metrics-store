@@ -10,10 +10,13 @@ import net.arunoday.metric.store.repository.GaugeMetricRepository;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -262,6 +265,18 @@ public class GaugeMetricRestService {
 		DateTime startDate = new DateTime(year, 1, 1, 0, 0);
 		DateTime endDate = startDate.plusYears(1);
 		return metricRepository.find(eventId, YEAR, startDate.toDate(), endDate.toDate());
+	}
+
+	/**
+	 * Maps exception to HTTP Response.
+	 * 
+	 * @param iae illegal argument exception
+	 * @return validation error message
+	 */
+	@ExceptionHandler(IllegalArgumentException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public String handleInvalidInputException(IllegalArgumentException iae) {
+		return "Validation Error: ".concat(iae.getMessage());
 	}
 
 	private void validateYear(int year) {
