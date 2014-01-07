@@ -22,9 +22,17 @@ mvn clean install
 ==== Gauge Event ====
 
 Event data stream is represented as +GaugeEvent+. Event can be represented in the form of following JSON structure. Gauge event has a +value+ field stored as +double+ and optionally context data can be stored in the form of map construct. Events are stored in their separate collections.
-e.g. for event with name 'request'; a collection with name +request_gauge_events+ is created in the +eventstore+ database.
+e.g. for event with name 'request'; a collection with name +request.event+ is created in the +eventstore+ database.
 
-JSON Structure Gauge Event:
+Events can be stored using the REST interface.
+
+[source, js]
+----
+curl -i -X PUT http://localhost:8080/rest/event/ -H "Content-Type: application/json" -d 
+'{"occuredOn":"2013-12-28T14:19:56Z","eventType":"request","value":11.0,"contextData":{"hostname":"localhost"}}'
+----
+
+JSON Structure of stored Gauge Event:
 
 [source, js]
 ----
@@ -33,16 +41,16 @@ JSON Structure Gauge Event:
     "_class" : "net.arunoday.metric.store.model.GaugeEvent",
     "occuredOn" : ISODate("2013-12-28T14:19:56Z"),
     "eventType" : "request",
-    "value" : 1,
+    "value" : 11,
     "contextData" : {
-        "index" : 1
+        "hostname" : "localhost"
     }
 }
 ----
 
 ==== Gauge Metric ====
 
-Metrics (+min+, +max+, +avg+, +sum+) are calculated based on the event input. Metrics are calculated using hierarchial aggregations. 
+Metrics (+min+, +max+, +mean+, +sum+) are calculated based on the event input. Metrics are calculated using hierarchial aggregations. 
 
 Following aggregations are supported:
 
@@ -53,7 +61,7 @@ Following aggregations are supported:
 * Yearly
 
 For each event type; aggregation results are stored in separate collections in +metricstore+ database. e.g. +request.minute+ +request.hourly+ +request.daily+ +request.monthly+ and +request.yearly+
-For generating minute wise aggregations, event data is used. But for hourly aggregations, instead of using event data stream; minute wise aggregations are used. Same approach is used for further aggregations.
+For generating minute wise aggregations, event data is used. But for hourly aggregations, instead of using event data stream; minute wise aggregations are used. Same approach is used for further aggregations of higher granularity.
 
 
 image::HierarchialAggregation.jpg[]
