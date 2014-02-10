@@ -1,13 +1,23 @@
 == MongoDB Metrics Storage Engine ==
 
-This project provides a storage engine based on MongoDB for timeseries event data stream. Metrics (min, max, avg, sum) are calculated periodically and stored separately from the event data stream.
+This project provides a storage engine based on MongoDB for timeseries event data stream. Metrics (+min+, +max+, +mean+, +sum+) are calculated periodically and stored separately from the event data stream.
 
 === Requirements: ===
 * Apache Maven version 3
-* Spring Data MongoDB 1.4.0.M1
-* MongoDB 2.0.7 or later
+* Spring Data MongoDB 1.4.0.RC1
+* MongoDB 2.2.x or later
 
-=== Building: ===
+=== Quickstart: ===
+
+==== Installation: ====
+
+Clone the repository using command
+[source]
+----
+git clone git://github.com/aparnachaudhary/mongodb-metrics-store.git
+----
+
+==== Building: ====
 image::https://travis-ci.org/aparnachaudhary/mongodb-metrics-store.png?branch=master["Build Status", link="https://travis-ci.org/aparnachaudhary/mongodb-metrics-store"]
 
 image::https://coveralls.io/repos/aparnachaudhary/mongodb-metrics-store/badge.png?branch=master["Build Status", link="https://coveralls.io/r/aparnachaudhary/mongodb-metrics-store?branch=master"]
@@ -15,6 +25,14 @@ To build, issue this from the command line:
 [source]
 ----
 mvn clean install
+----
+
+==== Start Server: ====
+
+To start the application using Jetty server from command line:
+[source]
+----
+mvn clean install -pl core jetty:run
 ----
 
 === How it works: ===
@@ -146,6 +164,10 @@ Following REST operations are supported.
 |Returns a single yearly metric aggregation for the given year.
 
 |===
+
+=== Feedback: ===
+
+Please feel free to raise bug reports or feature requests here https://github.com/aparnachaudhary/mongodb-metrics-store/issues?state=open[Issues].
 
 === Licensing and Copyright: ===
 

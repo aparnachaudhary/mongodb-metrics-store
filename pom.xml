@@ -28,8 +28,8 @@
 		<slf4j.version>1.6.6</slf4j.version>
 		<log4back.version>1.0.6</log4back.version>
 		<spring.version>4.0.0.RELEASE</spring.version>
-		<spring.data.mongo.version>1.4.0.M1</spring.data.mongo.version>
-		<spring.data.commons.version>1.7.0.M1</spring.data.commons.version>
+		<spring.data.mongo.version>1.4.0.RC1</spring.data.mongo.version>
+		<spring.data.commons.version>1.7.0.RC1</spring.data.commons.version>
 		<jetty.version>9.1.0.v20131115</jetty.version>
 		<jackson.version>2.2.2</jackson.version>
 		<joda.version>2.2</joda.version>
@@ -196,8 +196,8 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>2.1</version>
 					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
+						<source>1.7</source>
+						<target>1.7</target>
 					</configuration>
 				</plugin>
 				<plugin>
