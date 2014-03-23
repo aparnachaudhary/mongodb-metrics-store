@@ -46,7 +46,7 @@ Events can be stored using the REST interface.
 
 [source, js]
 ----
-curl -i -X PUT http://localhost:8080/rest/event/ -H "Content-Type: application/json" -d 
+curl -i -X POST http://localhost:8080/rest/events/ -H "Content-Type: application/json" -d 
 '{"occuredOn":"2013-12-28T14:19:56Z","eventType":"request","value":11.0,"contextData":{"hostname":"localhost"}}'
 ----
 
@@ -110,10 +110,10 @@ Following REST operations are supported.
 |===
 |Resource| Description
 
-|PUT /event/
+|POST /events/
 |Stores gauge events and returns the event identifier.
 
-|DELETE /event/+eventName+
+|DELETE /events/+eventName+
 |Deletes all events for the given event name.
 
 |===

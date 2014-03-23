@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Aparna Chaudhary
  */
 @RestController
-@RequestMapping(value = "/event")
+@RequestMapping(value = "/events")
 public class GaugeEventRestService {
 
 	private static final Logger logger = LoggerFactory.getLogger(GaugeEventRestService.class);
@@ -33,7 +33,7 @@ public class GaugeEventRestService {
 	 * @param gaugeEvent gauge event to be stored
 	 * @return identifier for the stored event
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public String storeEvent(@RequestBody() GaugeEvent gaugeEvent) {
 		logger.debug("storing gauge event: " + gaugeEvent);
 		gaugeEvent = eventRepository.save(gaugeEvent);

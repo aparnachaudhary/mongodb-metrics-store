@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
@@ -45,8 +45,7 @@ public class GaugeEventRestServiceIT {
 	@Before
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		this.mockMvc = standaloneSetup(eventRestService).setMessageConverters(new MappingJackson2HttpMessageConverter())
-				.build();
+		this.mockMvc = standaloneSetup(eventRestService).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
 	}
 
 	@Test
@@ -68,20 +67,16 @@ public class GaugeEventRestServiceIT {
 		String eventJson = "{\"id\":\"uniqueEventId\", \"occuredOn\":\"2013-08-10T16:00:00.389Z\","
 				+ "\"eventType\":\"restTest\",\"value\":11.0,\"contextData\":{\"hostname\":\"localhost\"}}";
 
-		mockMvc
-				.perform(
-						put("/event/").content(eventJson).contentType(MediaType.APPLICATION_JSON)
-								.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(content().string("\"uniqueEventId\""));
+		mockMvc.perform(post("/events/").content(eventJson).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(content().string("\"uniqueEventId\""));
 
 		verify(eventRepository).save(argThat(Matchers.<GaugeEvent> hasProperty("eventType", Matchers.equalTo("restTest"))));
 	}
 
 	@Test
 	public void testDelete() throws Exception {
-		mockMvc.perform(
-				delete("/event/{eventId}", "restTest").contentType(MediaType.APPLICATION_JSON).accept(
-						MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+		mockMvc.perform(delete("/events/{eventId}", "restTest").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(
+				status().isOk());
 
 		verify(eventRepository).deleteAll(eq("restTest"));
 	}
